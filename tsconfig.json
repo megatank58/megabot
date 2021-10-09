@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "moduleResolution": "node",
+        "declaration": false,
+        "removeComments": true,
+        "pretty": true,
+        "module": "CommonJS",
+        "target": "ES6",
+        "sourceMap": false,
+        "skipDefaultLibCheck": true,
+        "outDir": ".build"
+    },
+    "include": ["src/**/*"],
+    "buildOptions": {
+        "verbose": true
+    }
+}
