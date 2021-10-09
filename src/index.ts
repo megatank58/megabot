@@ -26,7 +26,7 @@ const commandFiles = readdirSync('.build/commands');
 for (const file of commandFiles) {
 	(async () => {
 		const command = await import(`./commands/${file}`); 
-		client._commands.set(command.default.name, command.default.execute);
+		client._commands.set(command.default.name, command.default);
 	})();
 }
 

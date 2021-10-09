@@ -10,7 +10,7 @@
     "dev:clean": "rm -rf .build && tsc && node .build/index.js",
     "lint": " yarn eslint src",
     "lint:fix": "yarn eslint src --fix",
-    "deploy": "tsc src/deploy-commands.ts && node .build/deploy-commands.js",
+    "deploy": "tsc src/deploy-commands.ts --target ES6 --module CommonJs && node src/deploy-commands.js && rm -rf src/deploy-commands.js",
     "build": "rm -rf .build && tsc"
   },
   "author": "@Megatank58",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.10.3",
+    "@types/node-fetch": "2.5.12",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
