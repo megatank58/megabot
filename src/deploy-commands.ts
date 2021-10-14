@@ -13,9 +13,10 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN!);
 (async () => {
 	for (const file of commandFiles) {
 		const command = await import(`../.build/commands/${file}`);
-		commands.push({ name: command.default.name, description: command.default.description });
+		commands.push({ name: command.default.name, description: command.default.description, options: command.default.options });
 	}
 
+	if (process.env.GUILD_ID) return rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID!, process.env.GUILD_ID), { body: commands });
+
 	rest.put(Routes.applicationCommands(process.env.CLIENT_ID!), { body: commands });
-	if (process.env.GUILD_ID) rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID!, process.env.GUILD_ID), { body: commands });
 })();
