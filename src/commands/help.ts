@@ -7,10 +7,10 @@ const help = new MessageEmbed()
 	.addFields(
 		{ name: 'Help', value: 'Displays this message' },
 		{ name: 'Ping', value: 'Checks ping with Discord servers'}
-		//{ name: '', value: ''},
+		{ name: 'Slowmode', value: 'Sets the slowmode of a channel.]'},
 	)
 	.setTimestamp()
-	.setFooter('Made by kevlu8 and Megatank58', 'https://i.imgur.com/AfFp7pu.png');
+	.setFooter('Made by kevlu8 and Megatank58');
 
 export default {
 	name: 'help',
