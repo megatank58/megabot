@@ -1,9 +1,9 @@
 import { CommandInteraction } from 'discord.js';
 
 export default {
-	name: 'ping',
-	description: 'Check the ping of the bot',
+	name: 'help',
+	description: 'Get a list of all commands',
 	execute(interaction: CommandInteraction) {
-		await interaction.editReply('Pong!');
+		await interaction.reply('WIP');
 	},
 };
