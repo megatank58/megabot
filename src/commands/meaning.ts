@@ -19,9 +19,11 @@ export default {
 		const word = args.word;
 		const query = new URLSearchParams({ term: word });
 
-		const { list } = await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json();
+		const { list } = await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json() as any;
 
 		const [answer] = list;
+
+		if (!answer) { return interaction.editReply('No meaning found!'); }
 
 		const embed = new MessageEmbed()
 			.setColor('#EFFF00')
