@@ -9,7 +9,7 @@ export default {
 
 		if (!command) return;
 
-		await interaction.deferReply();
+		await interaction.deferReply({ ephemeral: command.ephemeral || false });
 
 		const args: any = {};
 
