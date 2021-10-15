@@ -13,7 +13,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN!);
 (async () => {
 	for (const file of commandFiles) {
 		const command = await import(`../.build/commands/${file}`);
-		commands.push({ name: command.default.name, description: command.default.description, options: command.default.options });
+		commands.push({ name: command.default.name, description: command.default.description, options: command.default.options, default_permission: command.default.default_permission });
 	}
 
 	if (process.env.GUILD_ID) return rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID!, process.env.GUILD_ID), { body: commands });

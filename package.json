@@ -10,7 +10,7 @@
     "dev:clean": "rm -rf .build && tsc && node .build/index.js",
     "lint": " yarn eslint src",
     "lint:fix": "yarn eslint src --fix",
-    "deploy": "tsc src/deploy-commands.ts --target ES6 --module CommonJs && node src/deploy-commands.js && rm -rf src/deploy-commands.js",
+    "deploy": "tsc && node .build/deploy-commands.js",
     "build": "rm -rf .build && tsc"
   },
   "author": "@Megatank58",
