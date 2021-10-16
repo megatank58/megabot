@@ -12,8 +12,9 @@ export default {
 		},
 	],
 	default_permission: false,
-	async execute(interaction: CommandInteraction, args: any) {
-		const evaled = await eval(`(async () => { return ${args.code}})()`);
+	async execute(interaction: CommandInteraction) {
+		const code = interaction.options.getString('code');
+		const evaled = await eval(`(async () => { return ${code}})()`);
 		interaction.editReply(`${evaled}`);
 	},
 } as ApplicationCommandData;

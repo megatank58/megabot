@@ -15,8 +15,12 @@ export default {
 			required: true,
 		},
 	],
-	async execute(interaction: CommandInteraction, args: any) {
-		const word = args.word;
+	isGlobal: true,
+	async execute(interaction: CommandInteraction) {
+		const word = interaction.options.getString('word');
+
+		if (!word) return;
+
 		const query = new URLSearchParams({ term: word });
 
 		const { list } = await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json() as any;

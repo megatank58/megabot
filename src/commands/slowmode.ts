@@ -20,13 +20,14 @@ export default {
 		},
 	],
 	default_permission: false,
-	execute(interaction: CommandInteraction, args: any) {
-		const channel = interaction.guild?.channels.resolve(args.channel);
+	execute(interaction: CommandInteraction) {
+		const channel = interaction.options.getChannel('channel');
+		const slowmode = interaction.options.getInteger('slowmode');
 
-		if (!(channel instanceof TextChannel)) return;
+		if (!(channel instanceof TextChannel) || !channel || !slowmode) return;
 
-		channel.setRateLimitPerUser(args.slowmode);
+		channel.setRateLimitPerUser(slowmode);
 
-		interaction.editReply(`Slowmode in ${channel} is now ${args.slowmode} seconds`);
+		interaction.editReply(`Slowmode in ${channel} is now ${slowmode} seconds`);
 	},
 } as ApplicationCommandData;
