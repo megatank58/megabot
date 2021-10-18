@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, GuildMember } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, GuildMember, Constants } from 'discord.js';
 
 export default {
 	name: 'kick',
@@ -7,15 +7,16 @@ export default {
 		{
 			name: 'member',
 			description: 'The member to kick',
-			type: 6,
+			type: Constants.ApplicationCommandOptionTypes.USER,
 			required: true,
 		},
 		{
 			name: 'reason',
 			description: 'The reason for kick',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 		},
 	],
+	default_permission: false,
 	async execute(interaction: CommandInteraction) {
 		const member = interaction.options.getMember('member')!;
 		const reason = interaction.options.getString('reason')!;
@@ -25,7 +26,7 @@ export default {
 		member.user.send({
 			embeds: [
 				{
-					description: `You were kicked in **${interaction.guild?.name}** ${
+					description: `You were kicked from **${interaction.guild?.name}** ${
 						reason ? `**|| ${reason}**` : ''
 					}`,
 					color: 'RED',

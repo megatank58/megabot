@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, GuildMember } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, GuildMember, Constants } from 'discord.js';
 import fetch from 'node-fetch';
 
 export default {
@@ -8,13 +8,13 @@ export default {
 		{
 			name: 'member',
 			description: 'The warnings of the member to delete',
-			type: 6,
+			type: Constants.ApplicationCommandOptionTypes.USER,
 			required: true,
 		},
 		{
 			name: 'warn',
 			description: 'The ID of the warn',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 			required: true,
 		},
 	],

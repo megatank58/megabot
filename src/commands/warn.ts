@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, GuildMember } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, GuildMember, Constants } from 'discord.js';
 import { v4 as uuid } from 'uuid';
 import fetch from 'node-fetch';
 
@@ -9,13 +9,13 @@ export default {
 		{
 			name: 'member',
 			description: 'The member to warn',
-			type: 6,
+			type: Constants.ApplicationCommandOptionTypes.USER,
 			required: true,
 		},
 		{
 			name: 'reason',
 			description: 'The reason for warn',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 		},
 	],
 	default_permission: false,

@@ -1,5 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, TextChannel } from 'discord.js';
-import { ChannelTypes } from 'discord.js/typings/enums';
+import { CommandInteraction, ApplicationCommandData, TextChannel, Constants } from 'discord.js';
 
 export default {
 	name: 'slowmode',
@@ -8,14 +7,14 @@ export default {
 		{
 			name: 'channel',
 			description: 'The channel to set slowmode for',
-			type: 7,
+			type: Constants.ApplicationCommandOptionTypes.CHANNEL,
 			required: true,
-			channel_types: ChannelTypes.GUILD_TEXT,
+			channel_types: [Constants.ChannelTypes.GUILD_TEXT],
 		},
 		{
 			name: 'slowmode',
 			description: 'The slowmode to set',
-			type: 4,
+			type: Constants.ApplicationCommandOptionTypes.INTEGER,
 			required: true,
 		},
 	],

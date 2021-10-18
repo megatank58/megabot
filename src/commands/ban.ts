@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, GuildMember } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, GuildMember, Constants } from 'discord.js';
 
 export default {
 	name: 'ban',
@@ -7,15 +7,16 @@ export default {
 		{
 			name: 'member',
 			description: 'The member to ban',
-			type: 6,
+			type: Constants.ApplicationCommandOptionTypes.USER,
 			required: true,
 		},
 		{
 			name: 'reason',
 			description: 'The reason for ban',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 		},
 	],
+	default_permission: false,
 	async execute(interaction: CommandInteraction) {
 		const member = interaction.options.getMember('member')!;
 		const reason = interaction.options.getString('reason')!;

@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, MessageEmbed } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, MessageEmbed, Constants } from 'discord.js';
 import fetch from 'node-fetch';
 
 const trim = (str: string, max: number) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
@@ -11,7 +11,7 @@ export default {
 		{
 			name: 'word',
 			description: 'The word to find the meaning for',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 			required: true,
 		},
 	],

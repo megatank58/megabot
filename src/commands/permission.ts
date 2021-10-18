@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, Constants } from 'discord.js';
 
 export default {
 	name: 'permission',
@@ -7,19 +7,19 @@ export default {
 		{
 			name: 'command',
 			description: 'The command to set permission',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 			required: true,
 		},
 		{
 			name: 'query',
 			description: 'The member or role to set permission for',
-			type: 9,
+			type: Constants.ApplicationCommandOptionTypes.MENTIONABLE,
 			required: true,
 		},
 		{
 			name: 'type',
 			description: 'The command to set permission for',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 			required: true,
 			choices: [
 				{
@@ -35,7 +35,7 @@ export default {
 		{
 			name: 'permission',
 			description: 'The to set permission',
-			type: 5,
+			type: Constants.ApplicationCommandOptionTypes.BOOLEAN,
 			required: true,
 		},
 	],

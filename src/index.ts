@@ -8,11 +8,17 @@ declare module 'discord.js' {
    // eslint-disable-next-line
    interface Client {
 	_commands: Collection<string, any>
+	timeouts: {
+		guildId: string,
+		memberId: string,
+		value: any,
+	}[]
    }
 }
 
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS ] });
 client._commands = new Collection();
+client.timeouts = [];
 
 const eventFiles = readdirSync('.build/events');
 for (const file of eventFiles) {

@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, Constants } from 'discord.js';
 
 export default {
 	name: 'eval',
@@ -7,7 +7,7 @@ export default {
 		{
 			name: 'code',
 			description: 'The code to run',
-			type: 3,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 			required: true,
 		},
 	],

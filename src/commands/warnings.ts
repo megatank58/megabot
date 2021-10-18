@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, GuildMember, MessageEmbed } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, GuildMember, MessageEmbed, Constants } from 'discord.js';
 import fetch from 'node-fetch';
 
 export default {
@@ -8,7 +8,7 @@ export default {
 		{
 			name: 'member',
 			description: 'The warnings of the member to see',
-			type: 6,
+			type: Constants.ApplicationCommandOptionTypes.STRING,
 			required: true,
 		},
 	],

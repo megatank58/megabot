@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandData, TextChannel } from 'discord.js';
+import { CommandInteraction, ApplicationCommandData, TextChannel, Constants } from 'discord.js';
 
 export default {
 	name: 'purge',
@@ -7,10 +7,11 @@ export default {
 		{
 			name: 'messages',
 			description: 'The number of messages to clear',
-			type: 4,
+			type: Constants.ApplicationCommandOptionTypes.INTEGER,
 			required: true,
 		},
 	],
+	default_permission: false,
 	async execute(interaction: CommandInteraction) {
 		const channel = interaction.channel;
 		const number = interaction.options.getInteger('messages')!;
