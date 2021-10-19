@@ -14,7 +14,9 @@ export default {
 	default_permission: false,
 	async execute(interaction: CommandInteraction) {
 		const code = interaction.options.getString('code');
-		const evaled = await eval(`(async () => { return ${code}})()`);
+		const evaled = await eval(
+			`(async () => { let i=interaction; let g=interaction.guild; let c=interaction.client; return ${code}})()`,
+		).catch((err: Error) => err);
 		interaction.editReply(`${evaled}`);
 	},
 } as ApplicationCommandData;
