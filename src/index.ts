@@ -5,18 +5,21 @@ import { config } from 'dotenv';
 config();
 
 declare module 'discord.js' {
-   // eslint-disable-next-line
-   interface Client {
-	_commands: Collection<string, any>
-	timeouts: {
-		guildId: string,
-		memberId: string,
-		value: any,
-	}[]
-   }
+	// eslint-disable-next-line
+	interface Client {
+		_commands: Collection<string, any>;
+		timeouts: {
+			guildId: string;
+			memberId: string;
+			value: any;
+		}[];
+	}
+	interface GuildMember {
+		messages: Message[]
+	}
 }
 
-const client = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES ] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client._commands = new Collection();
 client.timeouts = [];
 
@@ -24,14 +27,16 @@ const eventFiles = readdirSync('.build/events');
 for (const file of eventFiles) {
 	(async () => {
 		const event = await import(`./events/${file}`);
-		event.default.once ? client.once(event.default.name, (...args: any) => event.default.execute(...args)) : client.on(event.default.name, (...args: any) => event.default.execute(...args)); 
+		event.default.once
+			? client.once(event.default.name, (...args: any) => event.default.execute(...args))
+			: client.on(event.default.name, (...args: any) => event.default.execute(...args));
 	})();
 }
 
 const commandFiles = readdirSync('.build/commands');
 for (const file of commandFiles) {
 	(async () => {
-		const command = await import(`./commands/${file}`); 
+		const command = await import(`./commands/${file}`);
 		client._commands.set(command.default.name, command.default);
 	})();
 }
