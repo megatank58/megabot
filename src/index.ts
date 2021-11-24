@@ -1,4 +1,4 @@
-import { Client, Intents, Collection, ApplicationCommand } from 'discord.js';
+import { Client, Intents, Collection, Options } from 'discord.js';
 import { readdirSync } from 'fs';
 import { config } from 'dotenv';
 
@@ -26,7 +26,25 @@ declare module 'discord.js' {
 	}
 }
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+	allowedMentions: { repliedUser: true },
+	failIfNotExists: false,
+	presence: {
+		activities: [{
+			name: 'with a dog!',
+			type: 'PLAYING',
+			url: 'https://megabot.rocks',
+		}],
+		status: 'idle',
+	},
+	makeCache: Options.cacheWithLimits({
+		GuildMemberManager: 10,
+		MessageManager: 100,
+		UserManager: 10,
+		PresenceManager: 0,
+	}),
+});
 client._commands = new Collection();
 client.timeouts = [];
 
