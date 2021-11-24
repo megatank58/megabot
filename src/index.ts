@@ -1,4 +1,4 @@
-import { Client, Intents, Collection } from 'discord.js';
+import { Client, Intents, Collection, ApplicationCommand } from 'discord.js';
 import { readdirSync } from 'fs';
 import { config } from 'dotenv';
 
@@ -7,7 +7,14 @@ config();
 declare module 'discord.js' {
 	// eslint-disable-next-line
 	interface Client {
-		_commands: Collection<string, any>;
+		_commands: Collection<
+			string,
+			ApplicationCommand & {
+				ephemeral: boolean;
+				execute: (interaction: CommandInteraction) => any;
+				complete: (interaction: AutocompleteInteraction) => any;
+			}
+		>;
 		timeouts: {
 			guildId: string;
 			memberId: string;
@@ -15,7 +22,7 @@ declare module 'discord.js' {
 		}[];
 	}
 	interface GuildMember {
-		messages: Message[]
+		messages: Message[];
 	}
 }
 

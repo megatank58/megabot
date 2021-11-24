@@ -5,8 +5,8 @@ export default {
 	description: 'Get your waifu',
 	isGlobal: true,
 	execute(interaction: CommandInteraction) {
-		const url = `https://thiswaifudoesnotexist.net/example-${Math.floor(
-			Math.random() * 100000,
+		const url = `https://thiswaifudoesnotexist.net/v2/example-${Math.floor(
+			Math.random() * 1_00_000,
 		)}.jpg`;
 		interaction.editReply({
 			embeds: [

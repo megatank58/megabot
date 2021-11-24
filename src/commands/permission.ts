@@ -1,4 +1,12 @@
-import { CommandInteraction, ApplicationCommandData, Constants } from 'discord.js';
+import {
+	CommandInteraction,
+	ApplicationCommandData,
+	Constants,
+	AutocompleteInteraction,
+	ApplicationCommandOptionChoice,
+} from 'discord.js';
+
+import { closest } from 'fastest-levenshtein';
 
 export default {
 	name: 'permission',
@@ -8,6 +16,7 @@ export default {
 			name: 'command',
 			description: 'The command to set permission',
 			type: Constants.ApplicationCommandOptionTypes.STRING,
+			autocomplete: true,
 			required: true,
 		},
 		{
@@ -64,6 +73,28 @@ export default {
 				},
 			],
 		});
-		interaction.editReply(`Permission setted successfully for ${command.name} command for ${query} ${type.toLowerCase()} as ${permission}`);
+		interaction.editReply(
+			`Permission setted successfully for ${
+				command.name
+			} command for ${query} ${type.toLowerCase()} as ${permission}`,
+		);
+	},
+	async complete(interaction: AutocompleteInteraction) {
+		const options: ApplicationCommandOptionChoice[] = [];
+		let commands = [...interaction.client._commands.map(command => command.name).values()];
+
+		const option = interaction.options.getFocused();
+
+		if (!option) return interaction.respond([{ name: commands[0], value: commands[0] }]);
+
+		for (let i = 0; i <= 10; i++) {
+
+			if (commands.length === 0) break; 
+
+			const _closest = closest(option.toString(), commands);
+			options.push({ name: _closest, value: _closest });
+			commands = commands.filter(command => command !== _closest);
+		}
+		interaction.respond(options);
 	},
 } as ApplicationCommandData;
