@@ -58,6 +58,7 @@ export default {
 			return interaction.editReply(`Only people with ${Formatters.inlineCode('ADMINISTRATOR')} permission can run this command`);
 		}
 
+		await interaction.client.application?.commands.fetch();
 		await interaction.guild?.commands.fetch();
 
 		const command = interaction.guild?.commands.cache.find(
