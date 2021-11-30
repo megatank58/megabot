@@ -78,7 +78,7 @@ export default {
 					config.logChannel = channelId;
 				}
 
-				manager.save(Config);
+				manager.save(config);
 
 				interaction.editReply(`Log channel set to ${interaction.options.getChannel('channel')!}`);
 				break;
@@ -98,7 +98,7 @@ export default {
 					config.roles = roles;
 				}
 
-				manager.save(Config);
+				manager.save(config);
 
 				interaction.editReply(`Mute role set to ${interaction.options.getRole('role')!}`);
 				break;

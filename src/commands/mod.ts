@@ -269,7 +269,7 @@ export default {
 
 				warnings?.warns.filter((warn) => warn.id !== id);
 
-				manager.save(Warnings);
+				manager.save(warnings);
 
 				interaction.editReply(`Deleted \`${id}\` warning for ${member}`);
 				break;
@@ -403,7 +403,7 @@ export default {
 					warnings.warns.push(warn);
 				}
 
-				manager.save(Warnings);
+				manager.save(warnings);
 
 				interaction.editReply({
 					embeds: [
