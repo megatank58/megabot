@@ -27,7 +27,7 @@ export default {
 			.addField('📥 Input', Formatters.codeBlock(code.substring(0, 1015), 'js'))
 			.setFooter('Feed me code!');
 		try {
-			let evaled = eval(`(async () => { ${code} })().catch(e => { return "Error: " + e })`);
+			let evaled = eval(`(async () => { return ${code} })().catch(e => { return "Error: " + e })`);
 			Promise.resolve(evaled).then(async (result) => {
 				evaled = result;
 				if (typeof evaled != 'string') evaled = (await import('util')).inspect(evaled);
@@ -40,7 +40,7 @@ export default {
 					interaction.editReply({ embeds: [embed], files });
 				} else {
 					embed
-						.addField('📤 Output', Formatters.codeBlock(evaled.substring(0, 1015), 'js'))
+						.addField('📤 Output', Formatters.codeBlock(evaled.substring(0, 1015)))
 						.setTitle('✅ Evaluation Completed');
 					interaction.editReply({ embeds: [embed] });
 				}
