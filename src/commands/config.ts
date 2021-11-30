@@ -54,6 +54,7 @@ export default {
 			],
 		},
 	],
+	default_permission: false,
 	async execute(interaction: CommandInteraction) {
 		if (!interaction.inCachedGuild()) return;
 

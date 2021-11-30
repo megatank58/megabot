@@ -223,6 +223,14 @@ export default {
 
 		switch (command) {
 			case 'ban': {
+				if (interaction.member.roles.highest < member.roles.highest) {
+					return interaction.editReply('This person is higher than you!');
+				}
+
+				if ((await interaction.guild.members.fetch(interaction.client.user!.id)).roles.highest < member.roles.highest) {
+					return interaction.editReply('My role is below this person!');
+				}
+
 				member.user.send({
 					embeds: [
 						{
@@ -234,7 +242,7 @@ export default {
 					],
 				});
 
-				member.ban({ reason: reason });
+				member.ban({ reason: reason }).catch(e => console.log(e));
 
 				interaction.editReply({
 					embeds: [
@@ -275,6 +283,14 @@ export default {
 				break;
 			}
 			case 'kick': {
+				if (interaction.member.roles.highest < member.roles.highest) {
+					return interaction.editReply('This person is higher than you!');
+				}
+
+				if ((await interaction.guild.members.fetch(interaction.client.user!.id)).roles.highest < member.roles.highest) {
+					return interaction.editReply('My role is below this person!');
+				}
+
 				member.user.send({
 					embeds: [
 						{
@@ -286,7 +302,7 @@ export default {
 					],
 				});
 
-				member.kick(reason);
+				member.kick(reason).catch(e => console.log(e));
 
 				interaction.editReply({
 					embeds: [
@@ -313,7 +329,7 @@ export default {
 					);
 				}
 
-				member.roles.add(config.roles.mute);
+				member.roles.add(config.roles.mute).catch(e => console.log(e));
 
 				setTimeout(async () => {
 					if ((await member.fetch()).roles.cache.has(config.roles.mute)) {
@@ -339,7 +355,7 @@ export default {
 
 				if (!channel || !(channel instanceof TextChannel)) return;
 
-				await channel.bulkDelete(number + 1, true);
+				await channel.bulkDelete(number + 1, true).catch(e => console.log(e));
 
 				const message = await channel.send(`Deleted ${number} messages!`);
 				setTimeout(() => message.delete(), 3000);
@@ -351,7 +367,7 @@ export default {
 
 				if (!(channel instanceof TextChannel) || !channel || !slowmode) return;
 
-				channel.setRateLimitPerUser(slowmode);
+				channel.setRateLimitPerUser(slowmode).catch(e => console.log(e));
 
 				interaction.editReply(`Slowmode in ${channel} is now ${slowmode} seconds`);
 				break;
@@ -367,7 +383,7 @@ export default {
 					);
 				}
 
-				member.roles.remove(config.roles.mute);
+				member.roles.remove(config.roles.mute).catch(e => console.log(e));
 
 				interaction.editReply({
 					embeds: [
