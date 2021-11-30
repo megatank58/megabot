@@ -206,7 +206,7 @@ export default {
 				{
 					name: 'member',
 					description: 'The warnings of the member to see',
-					type: Constants.ApplicationCommandOptionTypes.STRING,
+					type: Constants.ApplicationCommandOptionTypes.USER,
 					required: true,
 				},
 			],

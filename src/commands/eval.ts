@@ -24,7 +24,7 @@ export default {
 		const code = interaction.options.getString('code')!;
 		const embed = new MessageEmbed()
 			.setColor('BLUE')
-			.addField('📥 Input', Formatters.codeBlock(code.substring(0, 1015), 'js'))
+			.addField('📥 Input', Formatters.codeBlock(code.substring(0, 1015)))
 			.setFooter('Feed me code!');
 		try {
 			let evaled = eval(`(async () => { return ${code} })().catch(e => { return "Error: " + e })`);
