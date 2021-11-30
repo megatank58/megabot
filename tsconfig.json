@@ -4,6 +4,9 @@
         "moduleResolution": "node",
         "declaration": false,
         "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "strictPropertyInitialization": false,
         "pretty": true,
         "module": "CommonJS",
         "target": "ES6",
@@ -11,7 +14,9 @@
         "skipDefaultLibCheck": true,
         "outDir": ".build"
     },
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*"
+, "index.d.ts"    ],
     "buildOptions": {
         "verbose": true
     }

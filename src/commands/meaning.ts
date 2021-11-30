@@ -15,7 +15,6 @@ export default {
 			required: true,
 		},
 	],
-	isGlobal: true,
 	async execute(interaction: CommandInteraction) {
 		const word = interaction.options.getString('word');
 

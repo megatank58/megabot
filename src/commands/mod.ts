@@ -1,13 +1,15 @@
 import {
 	ApplicationCommandData,
-	GuildMember,
 	CommandInteraction,
 	Constants,
+	Formatters,
 	MessageEmbed,
 	TextChannel,
 } from 'discord.js';
+import { getMongoManager } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import fetch from 'node-fetch';
+import { Warn, Warnings } from '../schemas/Warns';
+import { Config } from '../schemas/Config';
 
 export default {
 	name: 'mod',
@@ -212,15 +214,15 @@ export default {
 	],
 	default_permission: false,
 	async execute(interaction: CommandInteraction) {
+		if (!interaction.inCachedGuild()) return;
+
 		const command = interaction.options.getSubcommand();
+		const member = interaction.options.getMember('member')!;
+		const reason = interaction.options.getString('reason')!;
+		const manager = getMongoManager();
 
 		switch (command) {
 			case 'ban': {
-				const member = interaction.options.getMember('member')!;
-				const reason = interaction.options.getString('reason')!;
-
-				if (!member || !(member instanceof GuildMember)) return;
-
 				member.user.send({
 					embeds: [
 						{
@@ -247,51 +249,32 @@ export default {
 				break;
 			}
 			case 'clearwarn': {
-				const member = interaction.options.getMember('member');
-				if (!member || !(member instanceof GuildMember)) return;
-
-				const body = {
-					secret: process.env.SECRET,
-					db: 'warns',
-					key: member.id,
-				};
-
-				await fetch(`${process.env.DATABASE_URL}/delete`, {
-					method: 'POST',
-					body: JSON.stringify(body),
-					headers: { 'Content-Type': 'application/json' },
+				await manager.findOneAndDelete(Warnings, {
+					guild: interaction.guildId,
+					member: member.id,
 				});
 
 				interaction.editReply(`Deleted all warnings for ${member}`);
 				break;
 			}
 			case 'delwarn': {
-				const member = interaction.options.getMember('member')!;
 				const id = interaction.options.getString('warn')!;
-				if (!(member instanceof GuildMember)) return;
 
-				const body = {
-					secret: process.env.SECRET,
-					db: 'warns',
-					key: member.id,
-					data: id,
-				};
-
-				await fetch(`${process.env.DATABASE_URL}/pop`, {
-					method: 'POST',
-					body: JSON.stringify(body),
-					headers: { 'Content-Type': 'application/json' },
+				const warnings = await manager.findOne(Warnings, {
+					guild: interaction.guildId,
+					member: member.id,
 				});
+
+				if (!warnings) return interaction.editReply('No warning found for the user.');
+
+				warnings?.warns.filter((warn) => warn.id !== id);
+
+				manager.save(Warnings);
 
 				interaction.editReply(`Deleted \`${id}\` warning for ${member}`);
 				break;
 			}
 			case 'kick': {
-				const member = interaction.options.getMember('member')!;
-				const reason = interaction.options.getString('reason')!;
-
-				if (!member || !(member instanceof GuildMember)) return;
-
 				member.user.send({
 					embeds: [
 						{
@@ -318,39 +301,25 @@ export default {
 				break;
 			}
 			case 'mute': {
-				const member = interaction.options.getMember('member')!;
-				const reason = interaction.options.getString('reason');
 				const time = interaction.options.getInteger('time')!;
 
-				const body = {
-					secret: process.env.SECRET,
-					db: 'muteroles',
-					key: interaction.guild?.id,
-				};
+				const config = await manager.findOne(Config, { guild: interaction.guildId });
 
-				const data = await (
-					await fetch(`${process.env.DATABASE_URL}/get`, {
-						method: 'POST',
-						body: JSON.stringify(body),
-						headers: { 'Content-Type': 'application/json' },
-					})
-				).json();
+				if (!config?.roles.mute) {
+					return interaction.editReply(
+						`Mute role has not been configured, yet. Configure it with ${Formatters.inlineCode(
+							'/configure roles mute',
+						)}`,
+					);
+				}
 
-				if (!member || !(member instanceof GuildMember)) return;
+				member.roles.add(config.roles.mute);
 
-				member.roles.add(data.role);
-
-				const timeout = setTimeout(async () => {
-					if ((await member.fetch()).roles.cache.has(data.role)) {
-						member.roles.remove(data.role);
+				setTimeout(async () => {
+					if ((await member.fetch()).roles.cache.has(config.roles.mute)) {
+						member.roles.remove(config.roles.mute);
 					}
 				}, time);
-
-				interaction.client.timeouts.push({
-					guildId: interaction.guildId!,
-					memberId: member.id,
-					value: timeout,
-				});
 
 				interaction.editReply({
 					embeds: [
@@ -388,32 +357,17 @@ export default {
 				break;
 			}
 			case 'unmute': {
-				const member = interaction.options.getMember('member')!;
-				const reason = interaction.options.getString('reason')!;
+				const config = await manager.findOne(Config, { guild: interaction.guildId });
 
-				const body = {
-					secret: process.env.SECRET,
-					db: 'muteroles',
-					key: interaction.guild?.id,
-				};
+				if (!config?.roles.mute) {
+					return interaction.editReply(
+						`Mute role has not been configured, yet. Configure it with ${Formatters.inlineCode(
+							'/configure roles mute',
+						)}`,
+					);
+				}
 
-				const data = await (
-					await fetch(`${process.env.DATABASE_URL}/get`, {
-						method: 'POST',
-						body: JSON.stringify(body),
-						headers: { 'Content-Type': 'application/json' },
-					})
-				).json();
-
-				if (!member || !(member instanceof GuildMember)) return;
-
-				member.roles.remove(data.role);
-
-				clearTimeout(
-					interaction.client.timeouts.find(
-						(timeout) => timeout.guildId === interaction.guildId! && timeout.memberId === member.id,
-					)?.value,
-				);
+				member.roles.remove(config.roles.mute);
 
 				interaction.editReply({
 					embeds: [
@@ -428,24 +382,29 @@ export default {
 				break;
 			}
 			case 'warn': {
-				const member = interaction.options.getMember('member');
-				const reason = interaction.options.getString('reason') ?? '';
+				const warnId = uuid();
 
-				if (!member || !(member instanceof GuildMember)) return;
+				const warn = new Warn();
+				warn.id = warnId;
+				warn.reason = reason;
+				warn.moderator = interaction.member.id;
 
-				const id = uuid();
-				const body = {
-					secret: process.env.SECRET,
-					db: 'warns',
-					key: member.id,
-					data: { id, reason, moderator: interaction.user.tag },
-				};
-
-				fetch(`${process.env.DATABASE_URL}/push`, {
-					method: 'POST',
-					body: JSON.stringify(body),
-					headers: { 'Content-Type': 'application/json' },
+				let warnings = await manager.findOne(Warnings, {
+					guild: interaction.guildId,
+					member: member.id,
 				});
+
+				if (!warnings) {
+					warnings = new Warnings();
+					warnings.guild = interaction.guildId;
+					warnings.member = member.id;
+					warnings.warns = [warn];
+				} else if (warnings) {
+					warnings.warns.push(warn);
+				}
+
+				manager.save(Warnings);
+
 				interaction.editReply({
 					embeds: [
 						{
@@ -459,26 +418,14 @@ export default {
 				break;
 			}
 			case 'warnings': {
-				const member = interaction.options.getMember('member');
-				if (!member || !(member instanceof GuildMember)) return;
-
 				const embed = new MessageEmbed();
 
-				const body = {
-					secret: process.env.SECRET,
-					db: 'warns',
-					key: member.id,
-				};
-
-				const data = await fetch(`${process.env.DATABASE_URL}/get`, {
-					method: 'POST',
-					body: JSON.stringify(body),
-					headers: { 'Content-Type': 'application/json' },
+				const warnings = await manager.findOne(Warnings, {
+					guild: interaction.guildId,
+					member: member.id,
 				});
 
-				const json = await data.json().catch(() => null);
-
-				if (!json || json.length == 0) {
+				if (!warnings?.warns || warnings?.warns.length === 0) {
 					embed.setDescription('No warnings.');
 					embed.setColor('BLUE');
 
@@ -487,7 +434,7 @@ export default {
 					});
 				}
 
-				for (const warn of json) {
+				for (const warn of warnings.warns) {
 					if (embed.fields.length < 24) {
 						embed.addField(
 							`ID: ${warn.id} | Moderator: ${warn.moderator}`,

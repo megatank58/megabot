@@ -1,30 +1,22 @@
-import { Client, Intents, Collection, Options } from 'discord.js';
-import { readdirSync } from 'fs';
+import { Client, Intents, Options } from 'discord.js';
 import { config } from 'dotenv';
+import { createConnection } from 'typeorm';
+import 'reflect-metadata';
+import { register } from './util/register';
 
 config();
 
-declare module 'discord.js' {
-	// eslint-disable-next-line
-	interface Client {
-		_commands: Collection<
-			string,
-			ApplicationCommand & {
-				ephemeral: boolean;
-				execute: (interaction: CommandInteraction) => any;
-				complete: (interaction: AutocompleteInteraction) => any;
-			}
-		>;
-		timeouts: {
-			guildId: string;
-			memberId: string;
-			value: any;
-		}[];
-	}
-	interface GuildMember {
-		messages: Message[];
-	}
-}
+createConnection({
+	type: 'mongodb',
+	url: process.env.DATABASE_URL,
+	logging: false,
+	synchronize: false,
+	entities: ['.build/schemas/*.js'],
+	cli: {
+		entitiesDir: 'src/schemas',
+	},
+	useUnifiedTopology: true,
+});
 
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -45,25 +37,7 @@ const client = new Client({
 		PresenceManager: 0,
 	}),
 });
-client._commands = new Collection();
-client.timeouts = [];
 
-const eventFiles = readdirSync('.build/events');
-for (const file of eventFiles) {
-	(async () => {
-		const event = await import(`./events/${file}`);
-		event.default.once
-			? client.once(event.default.name, (...args: any) => event.default.execute(...args))
-			: client.on(event.default.name, (...args: any) => event.default.execute(...args));
-	})();
-}
-
-const commandFiles = readdirSync('.build/commands');
-for (const file of commandFiles) {
-	(async () => {
-		const command = await import(`./commands/${file}`);
-		client._commands.set(command.default.name, command.default);
-	})();
-}
+new register(client);
 
 client.login();

@@ -1,4 +1,4 @@
-import { ApplicationCommandData, CommandInteraction } from 'discord.js';
+import type { ApplicationCommandData, CommandInteraction } from 'discord.js';
 
 export default {
 	name: 'invite',

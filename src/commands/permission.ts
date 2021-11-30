@@ -4,6 +4,8 @@ import {
 	Constants,
 	AutocompleteInteraction,
 	ApplicationCommandOptionChoice,
+	Permissions,
+	Formatters,
 } from 'discord.js';
 
 import { closest } from 'fastest-levenshtein';
@@ -48,8 +50,14 @@ export default {
 			required: true,
 		},
 	],
-	default_permission: false,
+	ephemeral: true,
 	async execute(interaction: CommandInteraction) {
+		if (!interaction.inCachedGuild()) return;
+
+		if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			return interaction.editReply(`Only people with ${Formatters.inlineCode('ADMINISTRATOR')} permission can run this command`);
+		}
+
 		await interaction.guild?.commands.fetch();
 
 		const command = interaction.guild?.commands.cache.find(
@@ -66,7 +74,6 @@ export default {
 			command: command.id,
 			permissions: [
 				{
-					// @ts-expect-error Query will always be present and a role or user
 					id: query.id,
 					type,
 					permission,
@@ -81,19 +88,19 @@ export default {
 	},
 	async complete(interaction: AutocompleteInteraction) {
 		const options: ApplicationCommandOptionChoice[] = [];
-		let commands = [...interaction.client._commands.map(command => command.name).values()];
+		let commands = [...interaction.client._commands.map((command) => command.name).values()];
 
 		const option = interaction.options.getFocused();
 
-		if (!option) return interaction.respond([{ name: commands[0], value: commands[0] }]);
+		if (!option) {
+			commands.map(command => options.push({ name: command, value: command }));
+			return interaction.respond(options);
+		}
 
-		for (let i = 0; i <= 10; i++) {
-
-			if (commands.length === 0) break; 
-
+		for (let i = 0; i <= 10 && commands.length !== 0; i++) {
 			const _closest = closest(option.toString(), commands);
 			options.push({ name: _closest, value: _closest });
-			commands = commands.filter(command => command !== _closest);
+			commands = commands.filter((command) => command !== _closest);
 		}
 		interaction.respond(options);
 	},

@@ -1,12 +1,19 @@
-import { ApplicationCommandData, CommandInteraction, Constants } from 'discord.js';
-import fetch from 'node-fetch';
+import {
+	ApplicationCommandData,
+	CommandInteraction,
+	Constants,
+	Formatters,
+	Permissions,
+} from 'discord.js';
+import { Config, Roles } from '../schemas/Config';
+import { getMongoManager } from 'typeorm';
 
 export default {
-	name: 'config',
-	description: 'Config the bot',
+	name: 'configure',
+	description: 'Configure the bot settings for your server',
 	options: [
 		{
-			name: 'log',
+			name: 'logging',
 			description: 'Set the log settings for the bot',
 			type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
 			options: [
@@ -47,35 +54,55 @@ export default {
 			],
 		},
 	],
-	default_permission: false,
 	async execute(interaction: CommandInteraction) {
-		switch (interaction.options.getSubcommand()) {
-			case 'logchannel':
-				fetch('https://database.bloxdatabase.repl.co/set', {
-					method: 'POST',
-					body: JSON.stringify({
-						secret: process.env.SECRET,
-						db: 'logchannels',
-						key: interaction.guild?.id,
-						data: { channel: interaction.options.getChannel('channel')!.id },
-					}),
-					headers: { 'Content-Type': 'application/json' },
-				});
+		if (!interaction.inCachedGuild()) return;
+
+		if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			return interaction.editReply(
+				`Only people with ${Formatters.inlineCode(
+					'ADMINISTRATOR',
+				)} permission can run this command`,
+			);
+		}
+		const manager = getMongoManager();
+		switch (interaction.options.getSubcommandGroup() + ' ' + interaction.options.getSubcommand()) {
+			case 'logging channel': {
+				const channelId = interaction.options.getChannel('channel')!.id;
+				let config = await manager.findOne(Config, { guild: interaction.guildId });
+
+				if (!config) {
+					config = new Config();
+					config.guild = interaction.guildId;
+					config.logChannel = channelId;
+				} else if (config) {
+					config.logChannel = channelId;
+				}
+
+				manager.save(Config);
+
 				interaction.editReply(`Log channel set to ${interaction.options.getChannel('channel')!}`);
 				break;
-			case 'muterole':
-				fetch('https://database.bloxdatabase.repl.co/set', {
-					method: 'POST',
-					body: JSON.stringify({
-						secret: process.env.SECRET,
-						db: 'muteroles',
-						key: interaction.guild?.id,
-						data: { role: interaction.options.getRole('role')!.id },
-					}),
-					headers: { 'Content-Type': 'application/json' },
-				});
+			}
+			case 'roles mute': {
+				const muteRoleId = interaction.options.getRole('role')!.id;
+				const roles = new Roles();
+				roles.mute = muteRoleId;
+
+				let config = await manager.findOne(Config, { guild: interaction.guildId });
+
+				if (!config) {
+					config = new Config();
+					config.guild = interaction.guildId;
+					config.roles = roles;
+				} else if (config) {
+					config.roles = roles;
+				}
+
+				manager.save(Config);
+
 				interaction.editReply(`Mute role set to ${interaction.options.getRole('role')!}`);
 				break;
+			}
 		}
 	},
 } as ApplicationCommandData;

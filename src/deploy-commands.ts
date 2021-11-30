@@ -20,7 +20,7 @@ async function run() {
 			options: command.default.options,
 			default_permission: command.default.default_permission,
 		};
-		command.default.isGlobal ? globalCommands.push(commandData) : guildCommands.push(commandData);
+		command.default.guildOnly ? guildCommands.push(commandData) : globalCommands.push(commandData);
 	}
 
 	await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID!), {
@@ -54,19 +54,6 @@ async function run() {
 				process.env.DISCORD_CLIENT_ID!,
 				process.env.DISCORD_GUILD_ID!,
 				evalCommand.id,
-			),
-			{ body: { permissions: [{ id: process.env.DISCORD_OWNER_ID!, type: 2, permission: true }] } },
-		);
-
-		const permissionCommand = commands.filter((_command) => _command.name === 'permission')[0];
-
-		if (!permissionCommand) return;
-
-		await rest.put(
-			Routes.applicationCommandPermissions(
-				process.env.DISCORD_CLIENT_ID!,
-				process.env.DISCORD_GUILD_ID!,
-				permissionCommand.id,
 			),
 			{ body: { permissions: [{ id: process.env.DISCORD_OWNER_ID!, type: 2, permission: true }] } },
 		);
