@@ -62,6 +62,8 @@ export default {
 
 		const command = interaction.guild?.commands.cache.find(
 			(cmd) => cmd.name === interaction.options.getString('command')!,
+		) || interaction.client.application?.commands.cache.find(
+			(cmd) => cmd.name === interaction.options.getString('command')!,
 		);
 		const query = interaction.options.getMentionable('query')!;
 		const type = interaction.options.getString('type');
