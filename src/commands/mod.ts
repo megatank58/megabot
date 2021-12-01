@@ -283,7 +283,7 @@ export default {
 
 				if (!warnings) return interaction.editReply('No warning found for the user.');
 
-				warnings?.warns = warnings?.warns.filter((warn) => warn.id !== id);
+				warnings.warns = warnings?.warns.filter((warn) => warn.id !== id);
 
 				manager.save(warnings);
 
