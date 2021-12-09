@@ -67,7 +67,6 @@ export default {
 			],
 		},
 	],
-	default_permission: false,
 	async execute(interaction: CommandInteraction) {
 		if (!interaction.inCachedGuild()) return;
 
@@ -76,17 +75,16 @@ export default {
 		let config = await manager.findOne(Config, { guild: interaction.guildId });
 
 		if (
-			!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) &&
-			config &&
-			config.roles?.moderator &&
-			!interaction.member.roles.cache.has(config.roles?.moderator)
+			!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) && 
+			!interaction.member.roles.cache.has(`${config?.roles?.moderator}`)
 		) {
 			return interaction.editReply(
 				`Only people with ${Formatters.inlineCode(
 					'ADMINISTRATOR',
-				)} permission or the ${config.roles?.moderator ? interaction.guild.roles.cache.get(config.roles?.moderator)?.toString() : 'moderator'} role can run this command`,
+				)} permission or the ${config?.roles?.moderator ? interaction.guild.roles.cache.get(config?.roles?.moderator)?.toString() : 'moderator'} role can run this command`,
 			);
 		}
+
 		switch (interaction.options.getSubcommandGroup() + ' ' + interaction.options.getSubcommand()) {
 			case 'logging channel': {
 				const channelId = interaction.options.getChannel('channel')!.id;
