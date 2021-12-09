@@ -10,6 +10,7 @@ import { getMongoManager } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Warn, Warnings } from '../schemas/Warns';
 import { Config } from '../schemas/Config';
+import { logger } from '../util';
 
 export default {
 	name: 'mod',
@@ -250,7 +251,7 @@ export default {
 					})
 					.catch();
 
-				member.ban({ reason: reason }).catch((e) => console.log(e));
+				member.ban({ reason: reason }).catch((e) => logger.info(e));
 
 				interaction.editReply({
 					embeds: [
@@ -318,7 +319,7 @@ export default {
 					})
 					.catch();
 
-				member.kick(reason).catch((e) => console.log(e));
+				member.kick(reason).catch((e) => logger.info(e));
 
 				interaction.editReply({
 					embeds: [
@@ -345,7 +346,7 @@ export default {
 					);
 				}
 
-				member.roles.add(config.roles.mute).catch((e) => console.log(e));
+				member.roles.add(config.roles.mute).catch((e) => logger.info(e));
 
 				setTimeout(async () => {
 					if ((await member.fetch()).roles.cache.has(config.roles.mute)) {
@@ -371,7 +372,7 @@ export default {
 
 				if (!channel || !(channel instanceof TextChannel)) return;
 
-				await channel.bulkDelete(number + 1, true).catch((e) => console.log(e));
+				await channel.bulkDelete(number + 1, true).catch((e) => logger.info(e));
 
 				const message = await channel.send(`Deleted ${number} messages!`);
 				setTimeout(() => message.delete(), 3000);
@@ -383,7 +384,7 @@ export default {
 
 				if (!(channel instanceof TextChannel) || !channel || !slowmode) return;
 
-				channel.setRateLimitPerUser(slowmode).catch((e) => console.log(e));
+				channel.setRateLimitPerUser(slowmode).catch((e) => logger.info(e));
 
 				interaction.editReply(`Slowmode in ${channel} is now ${slowmode} seconds`);
 				break;
@@ -399,7 +400,7 @@ export default {
 					);
 				}
 
-				member.roles.remove(config.roles.mute).catch((e) => console.log(e));
+				member.roles.remove(config.roles.mute).catch((e) => logger.info(e));
 
 				interaction.editReply({
 					embeds: [

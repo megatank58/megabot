@@ -2,10 +2,9 @@ import { Client, Intents, Options } from 'discord.js';
 import { config } from 'dotenv';
 import { createConnection } from 'typeorm';
 import 'reflect-metadata';
-import { register } from './util/register';
+import { register, logger } from './util';
 
 config();
-
 createConnection({
 	type: 'mongodb',
 	url: process.env.DATABASE_URL,
@@ -23,11 +22,13 @@ const client = new Client({
 	allowedMentions: { repliedUser: true },
 	failIfNotExists: false,
 	presence: {
-		activities: [{
-			name: 'with a dog!',
-			type: 'PLAYING',
-			url: 'https://megabot.rocks',
-		}],
+		activities: [
+			{
+				name: 'with a dog!',
+				type: 'PLAYING',
+				url: 'https://megabot.rocks',
+			},
+		],
 		status: 'idle',
 	},
 	makeCache: Options.cacheWithLimits({
@@ -37,6 +38,12 @@ const client = new Client({
 		PresenceManager: 0,
 	}),
 });
+
+if (process.argv.toString().toUpperCase().includes('--DEV')) {
+	client.on('debug', (m) => logger.debug(m));
+	client.on('warn', (m) => logger.warn(m));
+}
+client.on('error', (m) => logger.error(m));
 
 new register(client);
 

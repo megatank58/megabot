@@ -1,7 +1,9 @@
+import { logger } from '../util';
+
 export default {
 	name: 'ready',
 	once: true,
 	execute() {
-	    console.log('Bot has started!');
+	    logger.info('Bot has started!');
 	},
 };

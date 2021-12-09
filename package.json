@@ -5,8 +5,8 @@
   "main": ".build/index.js",
   "scripts": {
     "start": "node .build/index.js",
-    "dev": "tsc && node .build/index.js",
-    "dev:clean": "yarn build && node .build/index.js",
+    "dev": "tsc && node .build/index.js --DEV",
+    "dev:clean": "rm -rf .build && yarn dev",
     "lint": " yarn eslint src",
     "lint:fix": "yarn eslint src --fix",
     "deploy": "tsc --project deploy-commands.tsconfig.json && node .build/deploy-commands.js",
@@ -22,6 +22,7 @@
     "dotenv": "^10.0.0",
     "fastest-levenshtein": "^1.0.12",
     "node-fetch": "^2.6.5",
+    "pino": "^7.0.0-rc.9",
     "typeorm": "^0.2.41",
     "uuid": "^8.3.2"
   },
@@ -35,6 +36,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "mongodb": "^3.6.0",
+    "pino-pretty": "^7.2.0",
     "prettier": "^2.4.1",
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.5.0-beta"

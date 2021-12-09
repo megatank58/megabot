@@ -1,9 +1,10 @@
 import { REST } from '@discordjs/rest';
+import { logger } from './util/logger';
 import { Routes, APIApplicationCommand } from 'discord-api-types/v9';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';
 
-async function run() {
+export async function run() {
 	config();
 
 	const guildCommands = [];
@@ -20,6 +21,7 @@ async function run() {
 			options: command.default.options,
 			default_permission: command.default.default_permission,
 		};
+		logger.info(`Added command: ${commandData.name}`);
 		command.default.guildOnly ? guildCommands.push(commandData) : globalCommands.push(commandData);
 	}
 
@@ -27,16 +29,21 @@ async function run() {
 		body: globalCommands,
 	});
 
+	logger.info(`Commands deployed: ${globalCommands.length} commands`)
+
 	if (process.env.DISCORD_GUILD_ID) {
 		rest.put(
 			Routes.applicationGuildCommands(
 				process.env.DISCORD_CLIENT_ID!,
-				process.env.DISCORD_GUILD_ID!,
+				process.env.DISCORD_GUILD_ID,
 			),
 			{
 				body: guildCommands,
 			},
 		);
+
+		logger.info(`Commands deployed: ${guildCommands.length} commands`)
+		logger.info(`Guild: ${process.env.DISCORD_GUILD_ID}`)
 
 		const commands = (await rest.get(
 			Routes.applicationGuildCommands(

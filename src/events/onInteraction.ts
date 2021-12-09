@@ -1,4 +1,5 @@
 import type { Interaction } from 'discord.js';
+import { logger } from '../util'
 
 export default {
 	name: 'interactionCreate',
@@ -15,7 +16,7 @@ export default {
 			} catch (err) {
 				console.error(err);
 			} finally {
-				interaction.client.emit('debug', '[WS => CommandInteraction] Replied successfully');
+				logger.debug('CommandInteraction: Replied successfully');
 			}
 		} else if (interaction.isAutocomplete()) {
 			const command = interaction.client._commands.get(interaction.commandName);
@@ -27,7 +28,7 @@ export default {
 			} catch (err) {
 				console.error(err);
 			} finally {
-				interaction.client.emit('debug', '[WS => AutocompleteInteraction] Responded successfully');
+				logger.debug('AutocompleteInteraction: Responded successfully');
 			}
 		}
 	},
