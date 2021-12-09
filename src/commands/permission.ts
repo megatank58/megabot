@@ -9,6 +9,8 @@ import {
 } from 'discord.js';
 
 import { closest } from 'fastest-levenshtein';
+import { getMongoManager } from 'typeorm';
+import { Config } from '../schemas/Config';
 
 export default {
 	name: 'permission',
@@ -54,18 +56,33 @@ export default {
 	async execute(interaction: CommandInteraction) {
 		if (!interaction.inCachedGuild()) return;
 
-		if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-			return interaction.editReply(`Only people with ${Formatters.inlineCode('ADMINISTRATOR')} permission can run this command`);
+		const manager = getMongoManager();
+
+		let config = await manager.findOne(Config, { guild: interaction.guildId });
+
+		if (
+			!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) &&
+			config &&
+			config.roles?.moderator &&
+			!interaction.member.roles.cache.has(config.roles?.moderator)
+		) {
+			return interaction.editReply(
+				`Only people with ${Formatters.inlineCode(
+					'ADMINISTRATOR',
+				)} permission or the ${config.roles?.moderator ? interaction.guild.roles.cache.get(config.roles?.moderator)?.toString() : 'moderator'} role can run this command`,
+			);
 		}
 
 		await interaction.client.application?.commands.fetch();
 		await interaction.guild?.commands.fetch();
 
-		const command = interaction.guild?.commands.cache.find(
-			(cmd) => cmd.name === interaction.options.getString('command')!,
-		) || interaction.client.application?.commands.cache.find(
-			(cmd) => cmd.name === interaction.options.getString('command')!,
-		);
+		const command =
+			interaction.guild?.commands.cache.find(
+				(cmd) => cmd.name === interaction.options.getString('command')!,
+			) ||
+			interaction.client.application?.commands.cache.find(
+				(cmd) => cmd.name === interaction.options.getString('command')!,
+			);
 		const query = interaction.options.getMentionable('query')!;
 		const type = interaction.options.getString('type');
 		const permission = interaction.options.getBoolean('permission')!;
@@ -91,16 +108,21 @@ export default {
 	},
 	async complete(interaction: AutocompleteInteraction) {
 		const options: ApplicationCommandOptionChoice[] = [];
-		let commands = [...interaction.client._commands.map((command) => command.name).values()];
+		let commands = [
+			...interaction.client._commands
+				.filter((command) => command.name !== 'eval')
+				.map((command) => command.name)
+				.values(),
+		];
 
 		const option = interaction.options.getFocused();
 
 		if (!option) {
-			commands.map(command => options.push({ name: command, value: command }));
+			commands.map((command) => options.push({ name: command, value: command }));
 			return interaction.respond(options);
 		}
 
-		for (let i = 0; i <= 10 && commands.length !== 0; i++) {
+		for (let i = 0; i <= 5 && commands.length !== 0; i++) {
 			const _closest = closest(option.toString(), commands);
 			options.push({ name: _closest, value: _closest });
 			commands = commands.filter((command) => command !== _closest);

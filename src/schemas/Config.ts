@@ -4,6 +4,8 @@ import { Entity, ObjectID, ObjectIdColumn, Column } from 'typeorm';
 export class Roles {
     @Column()
     mute: Snowflake
+    @Column()
+    moderator: Snowflake
 }
 
 @Entity()

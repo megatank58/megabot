@@ -13,7 +13,7 @@ import { Config } from '../schemas/Config';
 import { logger } from '../util';
 
 export default {
-	name: 'mod',
+	name: 'moderation',
 	description: 'Moderation commands!',
 	options: [
 		{

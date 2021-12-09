@@ -51,6 +51,19 @@ export default {
 						},
 					],
 				},
+				{
+					name: 'moderator',
+					description: 'Set the moderator role',
+					type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+					options: [
+						{
+							name: 'role',
+							description: 'People with this role can use moderation commands',
+							type: Constants.ApplicationCommandOptionTypes.ROLE,
+							required: true,
+						},
+					],
+				},
 			],
 		},
 	],
@@ -58,18 +71,25 @@ export default {
 	async execute(interaction: CommandInteraction) {
 		if (!interaction.inCachedGuild()) return;
 
-		if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+		const manager = getMongoManager();
+
+		let config = await manager.findOne(Config, { guild: interaction.guildId });
+
+		if (
+			!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) &&
+			config &&
+			config.roles?.moderator &&
+			!interaction.member.roles.cache.has(config.roles?.moderator)
+		) {
 			return interaction.editReply(
 				`Only people with ${Formatters.inlineCode(
 					'ADMINISTRATOR',
-				)} permission can run this command`,
+				)} permission or the ${config.roles?.moderator ? interaction.guild.roles.cache.get(config.roles?.moderator)?.toString() : 'moderator'} role can run this command`,
 			);
 		}
-		const manager = getMongoManager();
 		switch (interaction.options.getSubcommandGroup() + ' ' + interaction.options.getSubcommand()) {
 			case 'logging channel': {
 				const channelId = interaction.options.getChannel('channel')!.id;
-				let config = await manager.findOne(Config, { guild: interaction.guildId });
 
 				if (!config) {
 					config = new Config();
@@ -89,6 +109,24 @@ export default {
 				const roles = new Roles();
 				roles.mute = muteRoleId;
 
+				if (!config) {
+					config = new Config();
+					config.guild = interaction.guildId;
+					config.roles = roles;
+				} else if (config) {
+					config.roles = roles;
+				}
+
+				manager.save(config);
+
+				interaction.editReply(`Mute role set to ${interaction.options.getRole('role')!}`);
+				break;
+			}
+			case 'roles moderator': {
+				const modRoleId = interaction.options.getRole('role')!.id;
+				const roles = new Roles();
+				roles.moderator = modRoleId;
+
 				let config = await manager.findOne(Config, { guild: interaction.guildId });
 
 				if (!config) {
@@ -101,7 +139,22 @@ export default {
 
 				manager.save(config);
 
-				interaction.editReply(`Mute role set to ${interaction.options.getRole('role')!}`);
+				await interaction.client.application?.commands.fetch();
+
+				interaction.guild?.commands.permissions.set({
+					command: interaction.client.application?.commands.cache.find(
+						(command) => command.name === 'moderator',
+					)?.id!,
+					permissions: [
+						{
+							id: modRoleId,
+							type: 'ROLE',
+							permission: true,
+						},
+					],
+				});
+
+				interaction.editReply(`Moderator role set to ${interaction.options.getRole('role')!}`);
 				break;
 			}
 		}
