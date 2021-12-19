@@ -231,10 +231,7 @@ export default {
 					return interaction.editReply('This person is higher than you!');
 				}
 
-				if (
-					(await interaction.guild.members.fetch(interaction.client.user!.id)).roles.highest.position <
-					member.roles.highest.position
-				) {
+				if (!member.bannable) {
 					return interaction.editReply('My role is below this person!');
 				}
 
@@ -299,10 +296,7 @@ export default {
 					return interaction.editReply('This person is higher than you!');
 				}
 
-				if (
-					(await interaction.guild.members.fetch(interaction.client.user!.id)).roles.highest.position <
-					member.roles.highest.position
-				) {
+				if (!member.kickable) {
 					return interaction.editReply('My role is below this person!');
 				}
 
