@@ -11,7 +11,7 @@
     "lint": " yarn eslint src",
     "lint:fix": "yarn eslint src --fix",
     "deploy": "tsc --project src/tsconfig.json && node .build/deploy-commands.js",
-    "build": "rm -rf .build && tsc --project src/tsconfig.json",
+    "build": "tsc --project src/tsconfig.json && tsc --build",
     "build:sub": "tsc --build",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
   },
