@@ -1,6 +1,4 @@
 import {
-	ApplicationCommandData,
-	CommandInteraction,
 	Constants,
 	Formatters,
 	MessageEmbed,
@@ -11,8 +9,9 @@ import { v4 as uuid } from 'uuid';
 import { Warn, Warnings } from '../schemas/Warns';
 import { Config } from '../schemas/Config';
 import { logger } from '@megabot/logger';
+import { Command } from '@megabot/command';
 
-export default {
+export default new Command({
 	name: 'moderation',
 	description: 'Moderation commands!',
 	options: [
@@ -213,8 +212,8 @@ export default {
 			],
 		},
 	],
-	default_permission: false,
-	async execute(interaction: CommandInteraction) {
+	defaultPermission: false,
+	async execute(interaction) {
 		if (!interaction.inCachedGuild()) return;
 
 		const command = interaction.options.getSubcommand();
@@ -478,4 +477,4 @@ export default {
 			}
 		}
 	},
-} as ApplicationCommandData;
+});

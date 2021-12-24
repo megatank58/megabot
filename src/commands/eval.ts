@@ -1,13 +1,12 @@
+import { Command } from '@megabot/command';
 import {
-	CommandInteraction,
-	ApplicationCommandData,
 	Constants,
 	MessageEmbed,
 	Formatters,
 	MessageAttachment,
 } from 'discord.js';
 
-export default {
+export default new Command({
 	name: 'eval',
 	description: 'Eval some code',
 	options: [
@@ -19,8 +18,8 @@ export default {
 		},
 	],
 	guildOnly: true,
-	default_permission: false,
-	async execute(interaction: CommandInteraction) {
+	defaultPermission: false,
+	async execute(interaction) {
 		const code = interaction.options.getString('code')!;
 		const embed = new MessageEmbed()
 			.setColor('BLUE')
@@ -61,4 +60,4 @@ export default {
 			interaction.editReply({ embeds: [embed] });
 		}
 	},
-} as ApplicationCommandData;
+});

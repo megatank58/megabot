@@ -1,7 +1,8 @@
 import type { Interaction } from 'discord.js';
-import { logger } from '@megabot/logger'
+import { logger } from '@megabot/logger';
+import { Event } from '@megabot/event';
 
-export default {
+export default new Event({
 	name: 'interactionCreate',
 	async execute(interaction: Interaction) {
 		if (interaction.isCommand()) {
@@ -32,4 +33,4 @@ export default {
 			}
 		}
 	},
-};
+});

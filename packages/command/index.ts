@@ -2,22 +2,27 @@ import { ApplicationCommandOptionData, ApplicationCommandSubGroup, AutocompleteI
 import { ApplicationCommandTypes } from "discord.js/typings/enums";
 
 export interface CommandOptions extends ChatInputApplicationCommandData {
+    guildOnly?: boolean
+    ephemeral?: boolean
     execute(interaction: CommandInteraction): any
     complete?(interaction: AutocompleteInteraction): any
     menu?(interaction: ContextMenuInteraction): any
 }
 
 export interface SubCommandGroupOptions extends ApplicationCommandSubGroup {
+    guildOnly?: boolean
+    ephemeral?: boolean
     execute(interaction: CommandInteraction): any
     complete?(interaction: AutocompleteInteraction): any
     menu?(interaction: ContextMenuInteraction): any
 }
 
 export class Command implements CommandOptions {
-
     name: string;
     description: string;
     defaultPermission?: boolean;
+    guildOnly?: boolean;
+    ephemeral?: boolean;
     type?: "CHAT_INPUT" | ApplicationCommandTypes.CHAT_INPUT;
     options?: ApplicationCommandOptionData[];
     execute: (interaction: CommandInteraction) => any;
@@ -28,6 +33,8 @@ export class Command implements CommandOptions {
         this.name = options.name;
         this.description = options.description;
         this.defaultPermission = options.defaultPermission;
+        this.guildOnly = options.guildOnly;
+        this.ephemeral = options.ephemeral;
         this.type = options.type;
         this.options = options.options;
         this.execute = options.execute;
@@ -35,7 +42,7 @@ export class Command implements CommandOptions {
         this.menu = options.menu;
     }
 }
-
+//TODO: Finish subcommand and subcommand groups
 export class SubCommandGroup {
 
 }

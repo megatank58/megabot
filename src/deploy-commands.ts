@@ -1,8 +1,13 @@
 import { REST } from '@discordjs/rest';
 import { logger } from '@megabot/logger';
+import { Command } from '@megabot/command';
 import { Routes, APIApplicationCommand } from 'discord-api-types/v9';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';
+
+interface File {
+	default: Command;
+}
 
 export async function run() {
 	config();
@@ -14,12 +19,12 @@ export async function run() {
 	const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN!);
 
 	for (const file of commandFiles) {
-		const command = await import(`../src/.build/commands/${file}`);
+		const command: File = await import(`../src/.build/commands/${file}`);
 		const commandData = {
 			name: command.default.name,
 			description: command.default.description,
 			options: command.default.options,
-			default_permission: command.default.default_permission,
+			default_permission: command.default.defaultPermission,
 		};
 		logger.info(`Added command: ${commandData.name}`);
 		command.default.guildOnly ? guildCommands.push(commandData) : globalCommands.push(commandData);

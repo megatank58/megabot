@@ -1,8 +1,6 @@
+import { Command } from '@megabot/command';
 import {
-	CommandInteraction,
-	ApplicationCommandData,
 	Constants,
-	AutocompleteInteraction,
 	ApplicationCommandOptionChoice,
 	Permissions,
 	Formatters,
@@ -12,7 +10,7 @@ import { closest } from 'fastest-levenshtein';
 import { getMongoManager } from 'typeorm';
 import { Config } from '../schemas/Config';
 
-export default {
+export default new Command({
 	name: 'permission',
 	description: 'Set the permission for a command',
 	options: [
@@ -53,7 +51,7 @@ export default {
 		},
 	],
 	ephemeral: true,
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction) {
 		if (!interaction.inCachedGuild()) return;
 
 		const manager = getMongoManager();
@@ -104,7 +102,7 @@ export default {
 			} command for ${query} ${type.toLowerCase()} as ${permission}`,
 		);
 	},
-	async complete(interaction: AutocompleteInteraction) {
+	async complete(interaction) {
 		const options: ApplicationCommandOptionChoice[] = [];
 		let commands = [
 			...interaction.client._commands
@@ -127,4 +125,4 @@ export default {
 		}
 		interaction.respond(options);
 	},
-} as ApplicationCommandData;
+});

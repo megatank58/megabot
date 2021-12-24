@@ -1,14 +1,13 @@
 import {
-	ApplicationCommandData,
-	CommandInteraction,
 	Constants,
 	Formatters,
 	Permissions,
 } from 'discord.js';
+import { Command } from '@megabot/command';
 import { Config, Roles } from '../schemas/Config';
 import { getMongoManager } from 'typeorm';
 
-export default {
+export default new Command({
 	name: 'configure',
 	description: 'Configure the bot settings for your server',
 	options: [
@@ -67,7 +66,7 @@ export default {
 			],
 		},
 	],
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction) {
 		if (!interaction.inCachedGuild()) return;
 
 		const manager = getMongoManager();
@@ -157,4 +156,4 @@ export default {
 			}
 		}
 	},
-} as ApplicationCommandData;
+});

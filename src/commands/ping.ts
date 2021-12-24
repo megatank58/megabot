@@ -1,9 +1,9 @@
-import type { CommandInteraction, ApplicationCommandData } from 'discord.js';
+import { Command } from "@megabot/command";
 
-export default {
+export default new Command({
 	name: 'ping',
 	description: 'Check the ping of the bot',
-	execute(interaction: CommandInteraction) {
+	execute(interaction) {
 		interaction.editReply('Pong!');
 	},
-} as ApplicationCommandData;
+});

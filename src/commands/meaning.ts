@@ -1,9 +1,10 @@
-import { CommandInteraction, ApplicationCommandData, MessageEmbed, Constants } from 'discord.js';
+import { Command } from '@megabot/command';
+import { MessageEmbed, Constants } from 'discord.js';
 import fetch from 'node-fetch';
 
 const trim = (str: string, max: number) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
 
-export default {
+export default new Command({
 	name: 'meaning',
 	description: 'Sends the meaning of a given word',
 	ephemeral: true,
@@ -15,7 +16,7 @@ export default {
 			required: true,
 		},
 	],
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction) {
 		const word = interaction.options.getString('word');
 
 		if (!word) return;
@@ -43,4 +44,4 @@ export default {
 
 		interaction.editReply({ embeds: [embed] });
 	},
-} as ApplicationCommandData;
+});

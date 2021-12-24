@@ -1,9 +1,8 @@
-import type { CommandInteraction, ApplicationCommandData } from 'discord.js';
-
-export default {
+import { Command } from '@megabot/command';
+export default new Command({
 	name: 'waifu',
 	description: 'Get your waifu',
-	execute(interaction: CommandInteraction) {
+	execute(interaction) {
 		const url = `https://thiswaifudoesnotexist.net/v2/example-${Math.floor(
 			Math.random() * 1_00_000,
 		)}.jpg`;
@@ -19,4 +18,4 @@ export default {
 			],
 		});
 	},
-} as ApplicationCommandData;
+});
