@@ -1,4 +1,13 @@
+# Environment variables
 .env
-.build
+# Build folders
+**/.build
+# log file
 log.json
+# node modules
 node_modules
+# packages
+packages/**/packages
+packages/**/*.js
+# yarn error file
+**/yarn-error.log

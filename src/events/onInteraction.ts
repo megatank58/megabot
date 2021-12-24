@@ -1,5 +1,5 @@
 import type { Interaction } from 'discord.js';
-import { logger } from '../util'
+import { logger } from '@megabot/logger'
 
 export default {
 	name: 'interactionCreate',

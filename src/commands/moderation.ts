@@ -10,7 +10,7 @@ import { getMongoManager } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Warn, Warnings } from '../schemas/Warns';
 import { Config } from '../schemas/Config';
-import { logger } from '../util';
+import { logger } from '@megabot/logger';
 
 export default {
 	name: 'moderation',

@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { logger } from './util/logger';
+import { logger } from '@megabot/logger';
 import { Routes, APIApplicationCommand } from 'discord-api-types/v9';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';
@@ -9,12 +9,12 @@ export async function run() {
 
 	const guildCommands = [];
 	const globalCommands = [];
-	const commandFiles = readdirSync('.build/commands');
+	const commandFiles = readdirSync('src/.build/commands');
 
 	const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN!);
 
 	for (const file of commandFiles) {
-		const command = await import(`../.build/commands/${file}`);
+		const command = await import(`../src/.build/commands/${file}`);
 		const commandData = {
 			name: command.default.name,
 			description: command.default.description,

@@ -1,8 +1,9 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
         "strict": true,
         "moduleResolution": "node",
-        "declaration": false,
+        "declaration": true,
         "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -11,13 +12,24 @@
         "module": "CommonJS",
         "target": "ES6",
         "sourceMap": false,
-        "skipDefaultLibCheck": true,
-        "outDir": ".build"
+        "skipDefaultLibCheck": true
     },
-    "include": [
-        "src/**/*"
-, "index.d.ts"    ],
     "buildOptions": {
         "verbose": true
-    }
+    },
+    "references": [
+        {
+            "path": "./packages/client"
+        },
+        {
+            "path": "./packages/command"
+        },
+        {
+            "path": "./packages/event"
+        },
+        {
+            "path": "./packages/logger"
+        }
+    ],
+    "exclude": ["src"]
 }

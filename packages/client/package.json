@@ -1,0 +1,13 @@
+{
+    "name": "@megabot/client",
+    "version": "0.0.1",
+    "description": "Create client for the bot",
+    "main": ".build/index.js",
+    "repository": "https://github.com/megatank58/megabot",
+    "author": "@megatank58",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "discord.js": "^13.3.1"
+    }
+}
