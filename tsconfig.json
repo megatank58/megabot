@@ -1,6 +1,8 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
+        "rootDir": "src",
+        "outDir": ".build",
         "strict": true,
         "moduleResolution": "node",
         "declaration": true,
@@ -9,27 +11,12 @@
         "experimentalDecorators": true,
         "strictPropertyInitialization": false,
         "pretty": true,
-        "module": "CommonJS",
-        "target": "ES6",
+        "module": "es2022",
+        "target": "es2021",
         "sourceMap": false,
         "skipDefaultLibCheck": true
     },
     "buildOptions": {
         "verbose": true
-    },
-    "references": [
-        {
-            "path": "./packages/client"
-        },
-        {
-            "path": "./packages/command"
-        },
-        {
-            "path": "./packages/event"
-        },
-        {
-            "path": "./packages/logger"
-        }
-    ],
-    "exclude": ["src"]
+    }
 }

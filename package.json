@@ -2,19 +2,33 @@
   "name": "megabot",
   "version": "1.0.0",
   "description": "A bot for managing everything in your server.",
-  "main": "src/.build/index.js",
+  "main": ".build/index.js",
+  "type": "module",
+  "types": "src/types",
   "private": true,
-  "workspaces": ["src", "packages/*"],
   "scripts": {
-    "start": "node .",
-    "dev": "tsc --project src/tsconfig.json && tsc --build && node .",
+    "start": "yarn node .",
+    "dev": "tsc && yarn node .",
     "lint": " yarn eslint src",
     "lint:fix": "yarn eslint src --fix",
-    "deploy": "tsc --project src/tsconfig.json && node .build/deploy-commands.js",
-    "build": "tsc --project src/tsconfig.json && tsc --build",
-    "build:sub": "tsc --build",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+    "deploy": "tsc && yarn node .build/deploy-commands.js",
+    "build": "tsc"
   },
   "author": "@megatank58",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.0.0-dev.1643544396.388f535",
+    "dotenv": "^15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.3",
+    "@types/node-fetch": "2.5.12",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.5.5"
+  }
 }

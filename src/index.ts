@@ -1,20 +1,45 @@
-import { Megabot } from '@megabot/client';
+import { ActivityType, Client, GatewayIntentBits, Options, Collection } from 'discord.js';
+import { readdirSync } from 'fs';
 import { config } from 'dotenv';
-import { createConnection } from 'typeorm';
-import 'reflect-metadata';
 
 config();
 
-createConnection({
-	type: 'mongodb',
-	url: process.env.DATABASE_URL,
-	logging: false,
-	synchronize: false,
-	entities: ['src/.build/schemas/*.js'],
-	cli: {
-		entitiesDir: 'src/schemas',
+const client = new Client({
+	intents: [GatewayIntentBits.Guilds],
+	allowedMentions: { repliedUser: true },
+	failIfNotExists: false,
+	presence: {
+		activities: [
+			{
+				name: 'with a dog!',
+				type: ActivityType.Game,
+				url: 'https://megabot.rocks',
+			},
+		],
+		status: 'idle',
 	},
-	useUnifiedTopology: true,
+	makeCache: Options.cacheWithLimits({
+		GuildMemberManager: 10,
+		UserManager: 10,
+		PresenceManager: 10,
+	}),
 });
 
-new Megabot();
+
+client._commands = new Collection();
+
+const eventFiles = readdirSync('.build/events').filter((file) => file.endsWith('.js'));
+for (const file of eventFiles) {
+	const event = await import(`${process.cwd()}/.build/events/${file}`);
+	event.default.once
+		? client.once(event.default.name, (...args: any) => event.default.execute(...args))
+		: client.on(event.default.name, (...args: any) => event.default.execute(...args));
+}
+
+const commandFiles = readdirSync('.build/commands').filter((file) => file.endsWith('.js'));
+for (const file of commandFiles) {
+	const command = await import(`${process.cwd()}/.build/commands/${file}`);
+	client._commands.set(command.default.name, command.default);
+}
+
+client.login();

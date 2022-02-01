@@ -1,4 +1,5 @@
-import { Client, Collection } from 'discord.js';
+import { Collection } from 'discord.js';
+
 declare module 'discord.js' {
     interface Client {
         _commands: Collection<string, ApplicationCommand & {
@@ -7,7 +8,4 @@ declare module 'discord.js' {
             complete: (interaction: AutocompleteInteraction) => any;
         }>;
     }
-}
-export declare class Megabot extends Client {
-    constructor();
 }
