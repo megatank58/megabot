@@ -1,7 +1,10 @@
+import { Client } from 'discord.js';
+import { logger } from '../util/logger.js';
+
 export default {
 	name: 'ready',
 	once: true,
-	execute() {
-		console.log('Megabot has started');
+	execute(client: Client) {
+		logger.info(`${client.user?.username} has started`);
 	},
 };

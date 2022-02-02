@@ -6,7 +6,7 @@ config();
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds],
-	allowedMentions: { repliedUser: true },
+	allowedMentions: { repliedUser: false },
 	failIfNotExists: false,
 	presence: {
 		activities: [
@@ -32,8 +32,8 @@ const eventFiles = readdirSync('.build/events').filter((file) => file.endsWith('
 for (const file of eventFiles) {
 	const event = await import(`${process.cwd()}/.build/events/${file}`);
 	event.default.once
-		? client.once(event.default.name, (...args: any) => event.default.execute(...args))
-		: client.on(event.default.name, (...args: any) => event.default.execute(...args));
+		? client.once(event.default.name, (...args: any) => event.default.execute(...args, client))
+		: client.on(event.default.name, (...args: any) => event.default.execute(...args, client));
 }
 
 const commandFiles = readdirSync('.build/commands').filter((file) => file.endsWith('.js'));
