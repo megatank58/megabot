@@ -4,6 +4,6 @@ export default {
 	name: 'ping',
 	description: 'Ping pong!',
 	execute(interaction: CommandInteraction) {
-		interaction.editReply(`${Date.now() - interaction.createdTimestamp}`);
+		interaction.editReply(`${Date.now() - interaction.createdTimestamp}ms`);
 	},
 };
