@@ -25,7 +25,6 @@ const client = new Client({
 	}),
 });
 
-
 client._commands = new Collection();
 
 const eventFiles = readdirSync('.build/events').filter((file) => file.endsWith('.js'));
