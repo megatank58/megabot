@@ -1,8 +1,7 @@
-import { ApplicationCommandOptionType } from 'discord-api-types';
-import { ChatInputCommandInteraction, Embed, Util } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord-api-types/v9';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import fetch from 'node-fetch';
-
-const trim = (str: string, max: number) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
+import { trim } from '../util';
 
 export default {
 	name: 'meaning',
@@ -29,8 +28,8 @@ export default {
 
 		if (!answer) { return interaction.editReply('No meaning found!'); }
 
-		const embed = new Embed()
-			.setColor(Util.resolveColor('BLUE'))
+		const embed = new EmbedBuilder()
+			.setColor('Blue')
 			.setTitle(answer.word)
 			.setURL(answer.permalink)
 			.addFields(
@@ -44,4 +43,4 @@ export default {
 
 		interaction.editReply({ embeds: [embed] });
 	},
-};
+} as any;

@@ -8,23 +8,22 @@
 	"private": true,
 	"scripts": {
 		"start": "yarn node .",
-		"dev": "tsc && yarn node .",
-		"lint": " yarn eslint src",
-		"lint:fix": "yarn eslint src --fix",
-		"deploy": "tsc && yarn node .build/deploy-commands.js",
+		"dev": "yarn build && yarn generate && yarn start",
+		"lint": " yarn eslint src --fix",
+		"deploy": "yarn build && yarn node .build/deploy-commands.js",
 		"build": "tsc",
-		"build:db": "npx prisma generate --schema=./src/prisma/schema.prisma "
+		"generate": "prisma generate --schema=./src/prisma/schema.prisma "
 	},
 	"author": "@megatank58",
 	"license": "MIT",
 	"dependencies": {
 		"@discordjs/rest": "^0.3.0",
+		"@prisma/client": "3.9.2",
 		"discord-api-types": "^0.26.1",
-		"discord.js": "^14.0.0-dev.1643544396.388f535",
+		"discord.js": "^14.0.0-dev.1647216471.87a6b84",
 		"dotenv": "^15.0.0",
 		"pino": "^7.6.5",
-		"pino-pretty": "^7.5.1",
-		"@prisma/client": "3.9.2"
+		"pino-pretty": "^7.5.1"
 	},
 	"devDependencies": {
 		"@types/node": "^16.10.3",
@@ -37,9 +36,9 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"prettier": "^2.4.1",
-		"typescript": "^4.5.5",
+		"prisma": "3.9.2",
+		"typescript": "^4.6.2",
 		"utf-8-validate": "^5.0.8",
-		"zlib-sync": "^0.1.7",
-		"prisma": "3.9.2"
+		"zlib-sync": "^0.1.7"
 	}
 }

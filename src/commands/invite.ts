@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, OAuth2Scopes } from 'discord.js';
 
 export default {
 	name: 'invite',
@@ -6,7 +6,7 @@ export default {
 	ephemeral: true,
 	async execute(interaction: CommandInteraction) {
 		const invite = interaction.client.generateInvite({
-			scopes: ['applications.commands', 'bot'],
+			scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
 			permissions: ['Administrator'],
 		});
 		interaction.editReply(`[Invite me](${invite} 'Link for invite') to your server!`);

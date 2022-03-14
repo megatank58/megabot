@@ -1,11 +1,10 @@
 import {
-	Util,
 	ContextMenuCommandInteraction,
-	Embed,
+	EmbedBuilder,
 	Formatters,
 	MessageAttachment,
 } from 'discord.js';
-import { ApplicationCommandType } from 'discord-api-types';
+import { ApplicationCommandType } from 'discord-api-types/v9';
 
 export default {
 	name: 'Eval',
@@ -14,9 +13,9 @@ export default {
 	defaultPermission: false,
 	async execute(interaction: ContextMenuCommandInteraction) {
 		const code = interaction.options.getMessage('message')!.content;
-		const embed = new Embed()
-			.setColor(Util.resolveColor('BLUE'))
-			.addField({ name: '📥 Input', value: Formatters.codeBlock(code.substring(0, 1015)) })
+		const embed = new EmbedBuilder()
+			.setColor('Blue')
+			.addFields({ name: '📥 Input', value: Formatters.codeBlock(code.substring(0, 1015)) })
 			.setFooter({ text: 'Feed me code!' });
 		try {
 			let evaled = eval(`(async () => { return ${code} })().catch(e => { return "Error: " + e })`);
@@ -27,12 +26,12 @@ export default {
 					const evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
 					const files = [evalOutputFile];
 					embed
-						.addField({ name: '📤 Output', value: 'Output is in file preview above' })
+						.addFields({ name: '📤 Output', value: 'Output is in file preview above' })
 						.setTitle('✅ Evaluation Completed');
 					interaction.editReply({ embeds: [embed], files });
 				} else {
 					embed
-						.addField({ name: '📤 Output', value: Formatters.codeBlock(evaled.substring(0, 1015)) })
+						.addFields({ name: '📤 Output', value: Formatters.codeBlock(evaled.substring(0, 1015)) })
 						.setTitle('✅ Evaluation Completed');
 					interaction.editReply({ embeds: [embed] });
 				}
@@ -45,7 +44,7 @@ export default {
 					.replace(/@/g, '@' + String.fromCharCode(8203));
 			}
 			embed
-				.addField({
+				.addFields({
 					name: '📤 Output',
 					value: Formatters.codeBlock((error as string).toString().substring(0, 1014), 'fix'),
 				})

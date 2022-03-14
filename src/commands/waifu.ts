@@ -1,4 +1,5 @@
-import { CommandInteraction, Util } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 
 export default {
 	name: 'waifu',
@@ -7,16 +8,16 @@ export default {
 		const url = `https://thiswaifudoesnotexist.net/v2/example-${Math.floor(
 			Math.random() * 1_00_000,
 		)}.jpg`;
+
+		const embed = new EmbedBuilder()
+			.setTitle('>')
+			.setColor('Aqua')
+			.setImage(url)
+			.setFooter({ text: 'Powered by https://thiswaifudoesnotexist.net' })
+			.setURL(url);
+
 		interaction.editReply({
-			embeds: [
-				{
-					title: '>',
-					color: Util.resolveColor('AQUA'),
-					image: { url },
-					footer: { text: 'Powered by https://thiswaifudoesnotexist.net' },
-					url,
-				},
-			],
+			embeds: [embed],
 		});
 	},
 };
