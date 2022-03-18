@@ -57,7 +57,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 
 	embed
 		.setDescription(
-			`:white_check_mark: ***${member} was kicked.*** ${reason ? `**|| ${reason}**` : ''}`,
+			`:white_check_mark: ${member} was kicked. ${reason ? `**|| ${reason}**` : ''}`,
 		);
 
 	interaction.editReply({

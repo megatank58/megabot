@@ -57,7 +57,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 
 	embed = new EmbedBuilder()
 		.setDescription(
-			`:white_check_mark: ***${member} was banned.*** ${reason ? `**|| ${reason}**` : ''}`,
+			`:white_check_mark: ${member} was banned. ${reason ? `**|| ${reason}**` : ''}`,
 		);
 
 	interaction.editReply({

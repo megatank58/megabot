@@ -63,9 +63,9 @@ export function run(interaction: ChatInputCommandInteraction) {
 
 	const embed = new EmbedBuilder()
 		.setDescription(
-			`:white_check_mark: ***${member} was muted${
+			`:white_check_mark: ${member} was muted${
 				time ? ` for ${new Date(time).getHours()}hrs` : ''
-			}.*** ${reason ? `**|| ${reason}**` : ''}`,
+			}. ${reason ? `**|| ${reason}**` : ''}`,
 		);
 
 	interaction.editReply({

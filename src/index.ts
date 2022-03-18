@@ -13,7 +13,7 @@ export async function main() {
 				{
 					name: 'with a dog!',
 					type: ActivityType.Playing,
-					url: 'https://megabot.rocks',
+					url: 'https://akemi.rocks',
 				},
 			],
 			status: 'idle',

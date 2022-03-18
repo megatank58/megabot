@@ -34,7 +34,7 @@ export async function run(interaction: ChatInputCommandInteraction) {
 
 	const id = v4();
 
-	const warnings = await prisma.warnings.findUnique({
+	const warnings = await prisma.warnings.findFirst({
 		where: {
 			guild: interaction.guildId!,
 			member: member.id,
@@ -52,8 +52,6 @@ export async function run(interaction: ChatInputCommandInteraction) {
 		await prisma.warnings.update({
 			where: {
 				id: warnings.id,
-				guild: interaction.guildId!,
-				member: interaction.member?.id,
 			},
 			data: {
 				warns: warnings.warns,
@@ -71,7 +69,7 @@ export async function run(interaction: ChatInputCommandInteraction) {
 
 	const embed = new EmbedBuilder()
 		.setDescription(
-			`:white_check_mark: ***${member} was warned.*** ${reason ? `**|| ${reason}**` : ''}`,
+			`:white_check_mark: ${member} was warned. ${reason ? `**|| ${reason}**` : ''}`,
 		);
 
 	interaction.editReply({

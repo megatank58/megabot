@@ -1,7 +1,7 @@
 import { CommandInteraction, OAuth2Scopes } from 'discord.js';
 
 export const name = 'invite';
-export const description = 'Invite MegaBot to your server!';
+export const description = 'Invite Akemi to your server!';
 export const ephemeral = true;
 export function run(interaction: CommandInteraction) {
 	const invite = interaction.client.generateInvite({

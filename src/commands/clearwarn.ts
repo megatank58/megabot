@@ -15,7 +15,7 @@ export const options = [
 		required: true,
 	},
 ];
-export function run(interaction: ChatInputCommandInteraction) {
+export async function run(interaction: ChatInputCommandInteraction) {
 	if (!interaction.inCachedGuild()) return;
 
 	const member = interaction.options.getMember('member')!;
@@ -24,12 +24,20 @@ export function run(interaction: ChatInputCommandInteraction) {
 		return interaction.editReply('You do not have the `KICK_MEMBERS` permission.');
 	}
 
-	prisma.warnings.delete({
+	const warnings = await prisma.warnings.findFirst({
 		where: {
 			guild: interaction.guildId!,
 			member: member.id,
 		},
 	});
 
-	interaction.editReply(`Deleted all warnings for ${member}`);
+	if (!warnings) return interaction.editReply('No warning found for the user.');
+
+	await prisma.warnings.delete({
+		where: {
+			id: warnings.id,
+		},
+	});
+
+	interaction.editReply(`Deleted all warnings for ${member}.`);
 }

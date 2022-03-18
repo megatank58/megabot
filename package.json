@@ -1,5 +1,5 @@
 {
-	"name": "megabot",
+	"name": "Akemi",
 	"version": "2.0.0",
 	"description": "A bot for managing everything in your server.",
 	"main": ".build/index.js",

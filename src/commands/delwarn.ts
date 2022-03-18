@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	ChatInputCommandInteraction,
+	PermissionsBitField,
+} from 'discord.js';
 import { prisma } from '../util';
 
 export const name = 'delwarn';
@@ -18,18 +22,16 @@ export const options = [
 	},
 ];
 export async function run(interaction: ChatInputCommandInteraction) {
-
 	if (!interaction.inCachedGuild()) return;
 
 	if (!interaction.memberPermissions.has(PermissionsBitField.Flags.KickMembers)) {
 		return interaction.editReply('You do not have the `KICK_MEMBERS` permission.');
 	}
 
-	
 	const member = interaction.options.getMember('member')!;
 	const id = interaction.options.getString('warn')!;
 
-	const warnings = await prisma.warnings.findUnique({
+	const warnings = await prisma.warnings.findFirst({
 		where: {
 			guild: interaction.guildId!,
 			member: member.id,
@@ -40,17 +42,14 @@ export async function run(interaction: ChatInputCommandInteraction) {
 
 	warnings.warns = warnings?.warns.filter((warn) => warn.id !== id);
 
-	prisma.warnings.update({
+	await prisma.warnings.update({
 		data: {
-			guild: interaction.guildId!,
-			member: member?.id,
 			warns: warnings.warns,
 		},
 		where: {
-			guild: interaction.guildId!,
-			member: member?.id,
+			id: warnings.id,
 		},
 	});
 
-	interaction.editReply(`Deleted \`${id}\` warning for ${member}`);
+	interaction.editReply(`Deleted \`${id}\` warning for ${member}.`);
 }

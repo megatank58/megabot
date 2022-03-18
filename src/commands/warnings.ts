@@ -27,7 +27,7 @@ export async function run(interaction: ChatInputCommandInteraction) {
 		return interaction.editReply('You do not have the `KICK_MEMBERS` permission.');
 	}
 
-	const warnings = await prisma.warnings.findUnique({
+	const warnings = await prisma.warnings.findFirst({
 		where: {
 			guild: interaction.guildId!,
 			member: member.id,
@@ -42,13 +42,11 @@ export async function run(interaction: ChatInputCommandInteraction) {
 		});
 	}
 
-	const fields = embed.toJSON().fields;
-
 	for (const warn of warnings.warns) {
-		if (fields && fields?.length < 24) {
+		if (embed.toJSON().fields?.length || 0 < 24) {
 			embed.addFields({
 				name: `ID: ${warn.id} | Moderator: ${warn.moderator}`,
-				value: `Reason: ${warn.reason}`,
+				value: `Reason: ${warn.reason || 'None'}`,
 			});
 		}
 	}

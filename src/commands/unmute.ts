@@ -34,7 +34,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 
 	const embed = new EmbedBuilder()
 		.setDescription(
-			`:white_check_mark: ***${member} was unmuted.*** ${reason ? `**|| ${reason}**` : ''}`,
+			`:white_check_mark: ${member} was unmuted. ${reason ? `**|| ${reason}**` : ''}`,
 		);
 
 	interaction.editReply({
