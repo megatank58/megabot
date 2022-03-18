@@ -10,7 +10,6 @@ export function run(interaction: CommandInteraction) {
 
 	const embed = new EmbedBuilder()
 		.setTitle('>')
-		.setColor('Aqua')
 		.setImage(url)
 		.setFooter({ text: 'Powered by https://thiswaifudoesnotexist.net' })
 		.setURL(url);

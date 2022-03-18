@@ -21,7 +21,6 @@ export const options = [
 export function run(interaction: ChatInputCommandInteraction) {
 	const code = interaction.options.getString('code', true);
 	const embed = new EmbedBuilder()
-		.setColor('Blue')
 		.addFields({ name: '📥 Input', value: Formatters.codeBlock(code.substring(0, 1015)) })
 		.setFooter({ text: 'Feed me code!' });
 	try {

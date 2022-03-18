@@ -66,8 +66,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 			`:white_check_mark: ***${member} was muted${
 				time ? ` for ${new Date(time).getHours()}hrs` : ''
 			}.*** ${reason ? `**|| ${reason}**` : ''}`,
-		)
-		.setColor('Green');
+		);
 
 	interaction.editReply({
 		embeds: [embed],

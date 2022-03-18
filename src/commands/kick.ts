@@ -45,8 +45,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 	const embed = new EmbedBuilder()
 		.setDescription(
 			`You were kicked from **${interaction.guild?.name}** ${reason ? `**|| ${reason}**` : ''}`,
-		)
-		.setColor('Red');
+		);
 
 	member.user
 		.send({
@@ -59,8 +58,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 	embed
 		.setDescription(
 			`:white_check_mark: ***${member} was kicked.*** ${reason ? `**|| ${reason}**` : ''}`,
-		)
-		.setColor('Green');
+		);
 
 	interaction.editReply({
 		embeds: [embed],

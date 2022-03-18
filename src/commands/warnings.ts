@@ -36,7 +36,6 @@ export async function run(interaction: ChatInputCommandInteraction) {
 
 	if (!warnings?.warns || warnings?.warns.length === 0) {
 		embed.setDescription('No warnings.');
-		embed.setColor('Blue');
 
 		return interaction.editReply({
 			embeds: [embed],
@@ -54,7 +53,7 @@ export async function run(interaction: ChatInputCommandInteraction) {
 		}
 	}
 
-	embed.setAuthor({ name: member.displayName, iconURL: member.displayAvatarURL() }).setColor('Blue');
+	embed.setAuthor({ name: member.displayName, iconURL: member.displayAvatarURL() });
 
 	interaction.editReply({
 		embeds: [embed],

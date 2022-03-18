@@ -45,8 +45,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 	let embed = new EmbedBuilder()
 		.setDescription(
 			`You were banned in **${interaction.guild?.name}** ${reason ? `**|| ${reason}**` : ''}`,
-		)
-		.setColor('Red');
+		);
 
 	member.user
 		.send({
@@ -59,8 +58,7 @@ export function run(interaction: ChatInputCommandInteraction) {
 	embed = new EmbedBuilder()
 		.setDescription(
 			`:white_check_mark: ***${member} was banned.*** ${reason ? `**|| ${reason}**` : ''}`,
-		)
-		.setColor('Green');
+		);
 
 	interaction.editReply({
 		embeds: [embed],

@@ -72,8 +72,7 @@ export async function run(interaction: ChatInputCommandInteraction) {
 	const embed = new EmbedBuilder()
 		.setDescription(
 			`:white_check_mark: ***${member} was warned.*** ${reason ? `**|| ${reason}**` : ''}`,
-		)
-		.setColor('Green');
+		);
 
 	interaction.editReply({
 		embeds: [embed],

@@ -32,7 +32,6 @@ export async function run(interaction: ChatInputCommandInteraction) {
 	}
 
 	const embed = new EmbedBuilder()
-		.setColor('Blue')
 		.setTitle(answer.word)
 		.setURL(answer.permalink)
 		.addFields(
