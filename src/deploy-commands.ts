@@ -1,60 +1,45 @@
 import { REST } from '@discordjs/rest';
-import { logger } from '@megabot/logger';
-import { Command } from '@megabot/command';
-import { Routes, APIApplicationCommand } from 'discord-api-types/v9';
-import { config } from 'dotenv';
+import { APIApplication, APIApplicationCommand, APIUser, Routes } from 'discord-api-types/v9';
+import 'dotenv/config';
 import { readdirSync } from 'fs';
+import { logger } from './util/logger.js';
 
-interface File {
-	default: Command;
-}
-
-export async function run() {
-	config();
-
+export async function main() {
 	const guildCommands = [];
 	const globalCommands = [];
-	const commandFiles = readdirSync('src/.build/commands');
-
-	const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN!);
+	const commandFiles = readdirSync('.build/commands').filter((file) => file.endsWith('.js'));
 
 	for (const file of commandFiles) {
-		const command: File = await import(`../src/.build/commands/${file}`);
+		const importedFile = await import(`./commands/${file}`);
 		const commandData = {
-			name: command.default.name,
-			description: command.default.description,
-			options: command.default.options,
-			default_permission: command.default.defaultPermission,
+			name: importedFile.name,
+			description: importedFile.description,
+			options: importedFile.options,
+			default_permission: importedFile.defaultPermission,
 		};
-		logger.info(`Added command: ${commandData.name}`);
-		command.default.guildOnly ? guildCommands.push(commandData) : globalCommands.push(commandData);
+		logger.info(`ADD[COMMAND]: ${commandData.name}`);
+		importedFile.guild_only ? guildCommands.push(commandData) : globalCommands.push(commandData);
 	}
 
-	await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID!), {
+	const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN!);
+	const CLIENT_ID = ((await rest.get(Routes.user())) as APIUser).id;
+
+	await rest.put(Routes.applicationCommands(CLIENT_ID!), {
 		body: globalCommands,
 	});
 
-	logger.info(`Commands deployed: ${globalCommands.length} commands`)
+	logger.info(`DEPLOY[GLOBAL]: ${globalCommands.length} commands`);
 
-	if (process.env.DISCORD_GUILD_ID) {
-		rest.put(
-			Routes.applicationGuildCommands(
-				process.env.DISCORD_CLIENT_ID!,
-				process.env.DISCORD_GUILD_ID,
-			),
-			{
-				body: guildCommands,
-			},
-		);
+	if (process.env.GUILD_ID) {
+		rest.put(Routes.applicationGuildCommands(CLIENT_ID!, process.env.GUILD_ID), {
+			body: guildCommands,
+		});
 
-		logger.info(`Commands deployed: ${guildCommands.length} commands`)
-		logger.info(`Guild: ${process.env.DISCORD_GUILD_ID}`)
+		logger.info(`DEPLOY[GUILD]: ${guildCommands.length} commands`);
+		logger.info(`GUILD: ${process.env.GUILD_ID}`);
 
 		const commands = (await rest.get(
-			Routes.applicationGuildCommands(
-				process.env.DISCORD_CLIENT_ID!,
-				process.env.DISCORD_GUILD_ID!,
-			),
+			Routes.applicationGuildCommands(CLIENT_ID!, process.env.GUILD_ID!),
 		)) as APIApplicationCommand[];
 
 		const evalCommand = commands.filter((_command) => _command.name === 'eval')[0];
@@ -62,14 +47,20 @@ export async function run() {
 		if (!evalCommand) return;
 
 		await rest.put(
-			Routes.applicationCommandPermissions(
-				process.env.DISCORD_CLIENT_ID!,
-				process.env.DISCORD_GUILD_ID!,
-				evalCommand.id,
-			),
-			{ body: { permissions: [{ id: process.env.DISCORD_OWNER_ID!, type: 2, permission: true }] } },
+			Routes.applicationCommandPermissions(CLIENT_ID!, process.env.GUILD_ID!, evalCommand.id),
+			{
+				body: {
+					permissions: [
+						{
+							id: ((await rest.get(Routes.oauth2CurrentApplication())) as APIApplication).owner?.id,
+							type: 2,
+							permission: true,
+						},
+					],
+				},
+			},
 		);
 	}
 }
 
-run();
+if (process.env.DEPLOY) void main();

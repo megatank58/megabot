@@ -1,10 +1,8 @@
-import { logger } from '@megabot/logger';
-import { Event } from '@megabot/event';
+import { Client } from 'discord.js';
+import { logger } from '../util/logger.js';
 
-export default new Event({
-	name: 'ready',
-	once: true,
-	execute() {
-	    logger.info('Bot has started!');
-	},
-});
+export const name = 'ready';
+export const once = true;
+export function run(client: Client) {
+	logger.info(`${client.user?.username} has started`);
+}

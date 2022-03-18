@@ -1,9 +1,7 @@
-import { Command } from "@megabot/command";
+import type { CommandInteraction } from 'discord.js';
 
-export default new Command({
-	name: 'ping',
-	description: 'Check the ping of the bot',
-	execute(interaction) {
-		interaction.editReply('Pong!');
-	},
-});
+export const name = 'ping';
+export const description = 'Ping pong!';
+export function run(interaction: CommandInteraction) {
+	interaction.editReply(`${Date.now() - interaction.createdTimestamp}ms`);
+}
