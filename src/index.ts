@@ -31,7 +31,7 @@ export async function main() {
 	const eventFiles = readdirSync('.build/events').filter((file) => file.endsWith('.js'));
 	for (const file of eventFiles) {
 		const event = await import(`./events/${file}`);
-		event.default.once
+		event.once
 			? client.once(event.name, (...args: any) => event.run(...args, client))
 			: client.on(event.name, (...args: any) => event.run(...args, client));
 	}

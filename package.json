@@ -10,7 +10,7 @@
 		"dev": "tsup --watch --onSuccess \"yarn start\"",
 		"lint": " yarn eslint src --fix",
 		"deploy": "yarn build && DEPLOY=TRUE yarn node .build/deploy-commands.js",
-		"build": "tsc",
+		"build": "tsc && yarn generate",
 		"generate": "prisma generate"
 	},
 	"author": "@megatank58",
