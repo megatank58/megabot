@@ -1,9 +1,7 @@
 import type { CommandInteraction } from 'discord.js';
 
-export default {
-	name: 'ping',
-	description: 'Ping pong!',
-	execute(interaction: CommandInteraction) {
-		interaction.editReply(`${Date.now() - interaction.createdTimestamp}ms`);
-	},
-};
+export const name = 'ping';
+export const description = 'Ping pong!';
+export function run(interaction: CommandInteraction) {
+	interaction.editReply(`${Date.now() - interaction.createdTimestamp}ms`);
+}

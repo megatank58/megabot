@@ -1,44 +1,47 @@
 {
 	"name": "megabot",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "A bot for managing everything in your server.",
 	"main": ".build/index.js",
-	"type": "module",
 	"types": "src/types",
 	"private": true,
 	"scripts": {
 		"start": "yarn node .",
-		"dev": "yarn build && yarn generate && yarn start",
+		"dev": "tsup --watch --onSuccess \"yarn start\"",
 		"lint": " yarn eslint src --fix",
-		"deploy": "yarn build && yarn node .build/deploy-commands.js",
+		"deploy": "yarn build && DEPLOY=TRUE yarn node .build/deploy-commands.js",
 		"build": "tsc",
-		"generate": "prisma generate --schema=./src/prisma/schema.prisma "
+		"generate": "prisma generate"
 	},
 	"author": "@megatank58",
 	"license": "MIT",
 	"dependencies": {
 		"@discordjs/rest": "^0.3.0",
-		"@prisma/client": "3.9.2",
+		"@prisma/client": "^3.11.0",
+		"@swc/core": "^1.2.156",
+		"bufferutil": "^4.0.6",
 		"discord-api-types": "^0.26.1",
 		"discord.js": "^14.0.0-dev.1647216471.87a6b84",
 		"dotenv": "^15.0.0",
+		"erlpack": "discord/erlpack",
 		"pino": "^7.6.5",
-		"pino-pretty": "^7.5.1"
+		"pino-pretty": "^7.5.1",
+		"prisma": "^3.11.0",
+		"tsup": "^5.12.1",
+		"utf-8-validate": "^5.0.8",
+		"uuid": "^8.3.2",
+		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
 		"@types/node": "^16.10.3",
 		"@types/node-fetch": "2.5.12",
+		"@types/uuid": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
-		"bufferutil": "^4.0.6",
-		"erlpack": "discord/erlpack",
 		"eslint": "^7.32.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"prettier": "^2.4.1",
-		"prisma": "3.9.2",
-		"typescript": "^4.6.2",
-		"utf-8-validate": "^5.0.8",
-		"zlib-sync": "^0.1.7"
+		"typescript": "^4.6.2"
 	}
 }

@@ -1,21 +1,20 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "rootDir": "src",
         "outDir": ".build",
         "strict": true,
         "moduleResolution": "node",
-        "declaration": true,
         "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "strictPropertyInitialization": false,
         "pretty": true,
-        "module": "es2022",
-        "target": "es2021",
+        "module": "CommonJS",
+        "target": "ES2022",
         "sourceMap": false,
         "skipDefaultLibCheck": true
     },
+    "exclude": ["tsup.config.ts"],
     "buildOptions": {
         "verbose": true
     }

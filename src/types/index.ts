@@ -1,15 +1,19 @@
 import { Collection } from 'discord.js';
+import { main } from '../deploy-commands';
 
 declare module 'discord.js' {
 	interface Client {
 		_commands: Collection<
 			string,
-			ApplicationCommand & {
+			{
+				name: string;
+				guild_only: boolean;
 				ephemeral: boolean;
-				execute: (interaction: CommandInteraction) => any;
-				complete: (interaction: AutocompleteInteraction) => any;
-				menu: (interaction: ContextMenuCommandInteraction) => any;
+				run?: (interaction: CommandInteraction) => any;
+				complete?: (interaction: AutocompleteInteraction) => any;
+				menu?: (interaction: ContextMenuCommandInteraction) => any;
 			}
 		>;
+		_deploy: typeof main
 	}
 }

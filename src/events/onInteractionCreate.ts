@@ -1,42 +1,46 @@
 import { type Interaction } from 'discord.js';
 
-export default {
-	name: 'interactionCreate',
-	async execute(interaction: Interaction) {
-		if (interaction.isCommand()) {
-			const command = interaction.client._commands.get(interaction.commandName);
+export const name = 'interactionCreate';
+export async function run(interaction: Interaction) {
+	if (interaction.isCommand()) {
+		const command = interaction.client._commands.get(interaction.commandName);
 
-			if (!command) return;
+		if (!command) return;
 
-			await interaction.deferReply({ ephemeral: command.ephemeral });
+		await interaction.deferReply({ ephemeral: command.ephemeral });
 
-			try {
-				command?.execute(interaction);
-			} catch (err) {
-				console.error(err);
-			}
-		} else if (interaction.isAutocomplete()) {
-			const command = interaction.client._commands.get(interaction.commandName);
+		try {
+			if (!command.run) return;
 
-			if (!command) return;
+			command.run(interaction);
+		} catch (err) {
+			console.error(err);
+		}
+	} else if (interaction.isAutocomplete()) {
+		const command = interaction.client._commands.get(interaction.commandName);
 
-			try {
-				command?.complete(interaction);
-			} catch (err) {
-				console.error(err);
-			}
-		} else if (interaction.isContextMenuCommand()) {
-			const command = interaction.client._commands.get(interaction.commandName);
+		if (!command) return;
 
-			if (!command) return;
+		try {
+			if (!command.complete) return;
 
-			await interaction.deferReply({ ephemeral: command.ephemeral });
+			command?.complete(interaction);
+		} catch (err) {
+			console.error(err);
+		}
+	} else if (interaction.isContextMenuCommand()) {
+		const command = interaction.client._commands.get(interaction.commandName);
 
-			try {
-				command?.menu(interaction);
-			} catch (err) {
-				console.error(err);
-			}
-		} 
-	},
-};
+		if (!command) return;
+
+		await interaction.deferReply({ ephemeral: command.ephemeral });
+
+		try {
+			if (!command.menu) return;
+			
+			command?.menu(interaction);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+}

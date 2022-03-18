@@ -1,0 +1,22 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type Warns {
+  id        String
+  moderator String
+  reason    Json?
+}
+
+model warnings {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  guild  String  @unique
+  member String  @unique
+  warns  Warns[]
+}
