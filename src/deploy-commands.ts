@@ -15,7 +15,7 @@ export async function main() {
 			name: importedFile.name,
 			description: importedFile.description,
 			options: importedFile.options,
-			default_permission: importedFile.defaultPermission,
+			default_permission: importedFile.default_permission,
 		};
 		logger.info(`ADD[COMMAND]: ${commandData.name}`);
 		importedFile.guild_only ? guildCommands.push(commandData) : globalCommands.push(commandData);
@@ -52,7 +52,7 @@ export async function main() {
 				body: {
 					permissions: [
 						{
-							id: ((await rest.get(Routes.oauth2CurrentApplication())) as APIApplication).owner?.id,
+							id: process.env.OWNER_ID!,
 							type: 2,
 							permission: true,
 						},

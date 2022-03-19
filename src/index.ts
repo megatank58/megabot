@@ -1,4 +1,4 @@
-import { ActivityType, Client, GatewayIntentBits, Options, Collection } from 'discord.js';
+import { Client, GatewayIntentBits, Options, Collection } from 'discord.js';
 import { readdirSync } from 'fs';
 import { main as deploy } from './deploy-commands';
 import 'dotenv/config';
@@ -8,16 +8,6 @@ export async function main() {
 		intents: [GatewayIntentBits.Guilds],
 		allowedMentions: { repliedUser: false },
 		failIfNotExists: false,
-		presence: {
-			activities: [
-				{
-					name: 'with a dog!',
-					type: ActivityType.Playing,
-					url: 'https://akemi.rocks',
-				},
-			],
-			status: 'idle',
-		},
 		makeCache: Options.cacheWithLimits({
 			GuildMemberManager: 10,
 			UserManager: 10,
