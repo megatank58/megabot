@@ -5,6 +5,6 @@ export const name = 'ready';
 export const once = true;
 export function run(client: Client) {
 	if (!client.user) return;
-	client.user.setActivity(`${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)} users ${client.guilds.cache.size} servers!`, { type: ActivityType.Watching });
+	client.user.setActivity(`${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)} users in ${client.guilds.cache.size} servers!`, { type: ActivityType.Watching });
 	logger.info(`INIT[${client.user.username}]`);
 }
