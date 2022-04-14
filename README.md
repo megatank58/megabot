@@ -1,3 +1,3 @@
-# Akemi
+# Megabot
 
-A simple utility and moderation bot for discord.
+> A simple utility and moderation bot for discord written with **discord.js**
